@@ -44,7 +44,45 @@ Write `runs/wave_NNN/METADATA.json`:
 
 Use a real timestamp. Do not use placeholders.
 
-## 3. Spawn planner subagents in parallel
+## 3. Initialize the timing ledger
+
+Create `runs/wave_NNN/TIMING.json`. This file contains bounded runtime metadata only; it must not contain qualitative judgments, feature names, rationale text, or scorer findings.
+
+Initial shape:
+
+```json
+{
+  "schema_version": "1.0",
+  "wave": "wave_NNN",
+  "updated_at": "<real ISO 8601 UTC>",
+  "runs": {},
+  "commands": {}
+}
+```
+
+For each assigned run slot, the phase orchestrator is responsible for recording phase timing around the fresh planner invocation:
+
+```json
+{
+  "runs": {
+    "MMM": {
+      "phase1": {
+        "started_at": "<real ISO 8601 UTC just before planner invocation>",
+        "completed_at": "<real ISO 8601 UTC just after planner return>",
+        "duration_seconds": <number>,
+        "status": "success",
+        "source": "phase1_orchestrator"
+      }
+    }
+  }
+}
+```
+
+If the harness only exposes a shared join point for a parallel batch, use the per-slot start time from just before each spawn and the shared post-join completion time for each finished slot. In that case set `source` to `phase1_orchestrator_parallel_join`.
+
+Use real timestamps and numeric durations. Do not use placeholders.
+
+## 4. Spawn planner subagents in parallel
 
 For each `MMM` from `001` to formatted `N`, create `runs/wave_NNN/plans/MMM/`, then spawn one fresh-context planner subagent. Spawn all planner subagents in parallel when your harness supports it.
 
@@ -80,7 +118,7 @@ When done, reply with a brief summary under 200 words: plan size, metadata writt
 
 Specify the requested candidate model and effort through your harness API.
 
-## 4. Audit phase-1 writes
+## 5. Audit phase-1 writes
 
 After all planners return, run:
 
@@ -93,13 +131,16 @@ Verify each planner wrote only:
 - `runs/wave_NNN/plans/MMM/PLAN.md`
 - `runs/wave_NNN/plans/MMM/CANDIDATE_METADATA.json`
 
+`runs/wave_NNN/TIMING.json` is written by the phase orchestrator, not planner subagents, and is allowed.
+
 Append any write-scope violations to `runs/wave_NNN/METADATA.json` under `audit_warnings`.
 
-## 5. Report phase-1 completion
+## 6. Report phase-1 completion
 
 Tell the user:
 
 ```text
 Wave NNN phase 1 complete. <K> plans in runs/wave_NNN/plans/.
+Timing ledger: runs/wave_NNN/TIMING.json.
 Audit warnings: <list, or "none">.
 ```

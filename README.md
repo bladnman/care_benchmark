@@ -17,7 +17,7 @@ The repo intentionally does not ship harness-specific agent definitions such as 
 | `prd/` | Product requirements read by phase-1 planners |
 | `PHASE_ONE_INSTRUCTIONS.md` | Phase-1 orchestrator workflow and planner prompt |
 | `phase_two.zip` | Later-phase instruction package |
-| `runs/wave_NNN/` | Generated benchmark wave output |
+| `runs/wave_NNN/` | Generated benchmark wave output, including `TIMING.json` runtime metadata |
 
 ## Hygiene
 
