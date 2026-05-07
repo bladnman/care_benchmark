@@ -1,0 +1,96 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors / IDEs
+.idea/
+.vscode/
+.zed/
+.fleet/
+
+# Cursor: ignore editor state (chats, etc.) but TRACK .cursor/agents/
+# (those are runner subagent definitions — part of the shipped instance, not editor metadata)
+.cursor/*
+!.cursor/agents/
+!.cursor/agents/**
+*.iml
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+build/
+coverage/
+.next/
+.nuxt/
+.svelte-kit/
+.parcel-cache/
+.turbo/
+.eslintcache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Go
+*.test
+*.out
+bin/
+
+# Rust
+target/
+
+# Java / Kotlin
+*.class
+*.jar
+*.war
+*.ear
+.gradle/
+build/
+
+# .NET
+bin/
+obj/
+
+# Ruby
+.bundle/
+vendor/bundle/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Misc
+.cache/
+tmp/
+
+# ─────────── CARE benchmark runner ───────────
+# Wave-scoped result folders — ephemeral per-run output. NOT isolation;
+# behavior is enforced by AGENTS.md (orchestrator allowlists + audit) and
+# by the strict SCORES.json schema. Repo hygiene only.
+/runs/
+
+# Unzipped form of phase_two.zip — recreated by the orchestrator at phase 2 from the zip.
+/phase_two/
