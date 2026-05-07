@@ -8,11 +8,9 @@ Thumbs.db
 .zed/
 .fleet/
 
-# Cursor: ignore editor state (chats, etc.) but TRACK .cursor/agents/
-# (those are runner subagent definitions — part of the shipped instance, not editor metadata)
-.cursor/*
-!.cursor/agents/
-!.cursor/agents/**
+# Cursor: editor/workspace state. The benchmark runner is portable; do not
+# ship repo-local Cursor agent definitions as part of the benchmark contract.
+.cursor/
 *.iml
 *.swp
 *.swo

@@ -53,7 +53,7 @@ A small JSON file with your runtime metadata. Your orchestrator's prompt told yo
 ## Constraints
 
 - **No questions back to the human.** Plan from what the PRD provides. If something is ambiguous, make a defensible call and note it in your plan.
-- **Stay inside the read and write allowlists your orchestrator gave you.** Specifically: do not read peer slots, do not read the evaluation kit (`phase_two/`), do not read other waves.
+- **Stay inside the read and write allowlists your orchestrator gave you.** Do not read peer slots, other waves, root orientation files, archive files, or any file outside the allowlist.
 - **Write exactly two files** in your assigned slot: `PLAN.md` and `CANDIDATE_METADATA.json`. Nothing else.
 
 ## When done
