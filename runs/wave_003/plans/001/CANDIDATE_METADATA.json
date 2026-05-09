@@ -1,0 +1,8 @@
+{
+  "model": "gpt-5.5",
+  "effort_level": "high",
+  "temperature": null,
+  "harness": "codex-cli",
+  "provider": "openai",
+  "parameters": {}
+}
