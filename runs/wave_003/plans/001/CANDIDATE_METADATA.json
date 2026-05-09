@@ -1,0 +1,8 @@
+{
+  "model": "claude-4.6-sonnet",
+  "effort_level": "high",
+  "temperature": null,
+  "harness": "claude-code",
+  "provider": "anthropic",
+  "parameters": {}
+}
