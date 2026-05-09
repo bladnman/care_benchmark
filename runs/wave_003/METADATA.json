@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "medium",
+  "candidate_model_default": "gemini-3-flash-preview",
+  "completed_at": "2026-05-09T14:58:15Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-05-09T14:44:26Z",
+  "wave_number": 3
+}
