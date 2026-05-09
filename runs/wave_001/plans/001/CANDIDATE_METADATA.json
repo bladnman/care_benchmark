@@ -1,0 +1,8 @@
+{
+  "model": "claude-opus-4-7",
+  "effort_level": "high",
+  "temperature": null,
+  "harness": "claude-code",
+  "provider": "anthropic",
+  "parameters": {}
+}
