@@ -1,0 +1,98 @@
+{
+  "candidate": {
+    "effort_level": "medium",
+    "harness": "gemini-cli",
+    "model": "gemini-3.5-flash",
+    "parameters": {
+      "care_effort_rank_from_top": 1,
+      "native_effort_field": "thinkingLevel",
+      "native_effort_value": "MEDIUM",
+      "native_model_id": "gemini-3.5-flash"
+    },
+    "provider": "google",
+    "temperature": null
+  },
+  "denominators": {
+    "feature_level_whys": 40,
+    "reachable_feature_level_whys": 36,
+    "system_level_whys": 9,
+    "total_features": 120,
+    "total_gold_whys": 49
+  },
+  "evaluator": {
+    "effort_level": "extra-high",
+    "harness": "codex-cli",
+    "model": "gpt-5.5",
+    "parameters": {},
+    "provider": "openai",
+    "temperature": null
+  },
+  "evidence_audit": {
+    "denominator_excluded_unreachable_whys": 4,
+    "denominator_included_whys": 45,
+    "plan_only_not_reconstructed_count": 0,
+    "rule_without_why_count": 15,
+    "schema_version": "v06_evidence_bound_clean",
+    "ungrounded_reconstruction_count": 0,
+    "whys_with_plan_grounding": 45,
+    "whys_with_reconstruction_evidence": 45
+  },
+  "gold_why_totals": {
+    "possible_feature_why_count": 40,
+    "possible_feature_why_weight": 124,
+    "possible_gold_why_count": 49,
+    "possible_gold_why_weight": 152,
+    "possible_system_why_count": 9,
+    "possible_system_why_weight": 28
+  },
+  "intent_recovery": {
+    "excluded_unreachable_why_count": 4,
+    "feature_reachable_weight": 112,
+    "feature_recovered_weight": 52,
+    "reachable_feature_why_count": 36,
+    "reachable_gold_why_count": 45,
+    "reachable_system_why_count": 9,
+    "reachable_weight": 140,
+    "recovered_weight": 70,
+    "system_reachable_weight": 28,
+    "system_recovered_weight": 18,
+    "total_possible_weight": 152
+  },
+  "low_confidence": false,
+  "run_label": "",
+  "run_number": 1,
+  "schema_version": "1.0",
+  "scores": {
+    "combined": 7867,
+    "feature_level_fidelity": 0.4642857142857143,
+    "intent_fidelity": 0.5,
+    "planning_quality": 0.7916666666666666,
+    "system_level_fidelity": 0.6428571428571429
+  },
+  "timestamp": "2026-05-20T15:07:20Z",
+  "timing": {
+    "phase1_completed_at": "2026-05-20T14:59:27Z",
+    "phase1_duration_seconds": 66.103,
+    "phase1_started_at": "2026-05-20T14:58:21Z",
+    "phase2a_completed_at": "2026-05-20T15:02:28Z",
+    "phase2a_duration_seconds": 180.936,
+    "phase2a_started_at": "2026-05-20T14:59:27Z",
+    "phase2b_completed_at": "2026-05-20T15:12:10Z",
+    "phase2b_duration_seconds": 581.404,
+    "phase2b_started_at": "2026-05-20T15:02:28Z",
+    "run_completed_at": "2026-05-20T15:12:10Z",
+    "run_duration_seconds": 829.0,
+    "run_started_at": "2026-05-20T14:58:21Z",
+    "schema_version": "1.0",
+    "source": "runs_timing_json"
+  },
+  "weighted_totals": {
+    "feature_denominator": 112,
+    "feature_recovered": 52,
+    "feature_unreachable_excluded_weight": 12,
+    "intent_denominator": 140,
+    "intent_recovered": 70,
+    "system_denominator": 28,
+    "system_recovered": 18
+  }
+}
