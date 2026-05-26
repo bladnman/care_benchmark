@@ -1,0 +1,19 @@
+{
+  "model": "gemma-4-31b-it",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "google",
+  "parameters": {
+    "model_release_date": "2026-04-02",
+    "native_effort_field": "--variant",
+    "native_effort_semantics": "provider_default_unverified",
+    "native_effort_status": "omitted",
+    "native_effort_value": null,
+    "native_model_id": "openrouter/google/gemma-4-31b-it",
+    "native_supports_reasoning": true,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "google/gemma-4-31b-it",
+    "routing_provider": "openrouter"
+  }
+}
