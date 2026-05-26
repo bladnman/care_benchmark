@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "unknown",
+  "candidate_model_default": "grok-build-0.1",
+  "completed_at": "2026-05-26T20:06:08Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-05-26T19:46:08Z",
+  "wave_number": 2
+}
