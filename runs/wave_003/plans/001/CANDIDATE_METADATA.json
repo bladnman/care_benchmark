@@ -1,0 +1,19 @@
+{
+  "model": "qwen3.7-max",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "qwen",
+  "parameters": {
+    "model_release_date": "2026-05-21",
+    "native_effort_field": "--variant",
+    "native_effort_semantics": "provider_default_unverified",
+    "native_effort_status": "omitted",
+    "native_effort_value": null,
+    "native_model_id": "openrouter/qwen/qwen3.7-max",
+    "native_supports_reasoning": true,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "qwen/qwen3.7-max",
+    "routing_provider": "openrouter"
+  }
+}
