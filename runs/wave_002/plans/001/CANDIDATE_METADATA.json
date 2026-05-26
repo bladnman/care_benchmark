@@ -1,0 +1,19 @@
+{
+  "model": "kimi-k2.6",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "moonshot",
+  "parameters": {
+    "model_release_date": "2026-04-21",
+    "native_effort_field": "--variant",
+    "native_effort_semantics": "provider_default_unverified",
+    "native_effort_status": "omitted",
+    "native_effort_value": null,
+    "native_model_id": "openrouter/moonshotai/kimi-k2.6",
+    "native_supports_reasoning": true,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "moonshotai/kimi-k2.6",
+    "routing_provider": "openrouter"
+  }
+}
