@@ -1,0 +1,19 @@
+{
+  "model": "grok-4.3",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "xai",
+  "parameters": {
+    "model_release_date": "2026-04-17",
+    "native_effort_field": "--variant",
+    "native_effort_semantics": "provider_default_unverified",
+    "native_effort_status": "omitted",
+    "native_effort_value": null,
+    "native_model_id": "openrouter/x-ai/grok-4.3",
+    "native_supports_reasoning": true,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "x-ai/grok-4.3",
+    "routing_provider": "openrouter"
+  }
+}
