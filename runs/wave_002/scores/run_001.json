@@ -1,0 +1,104 @@
+{
+  "candidate": {
+    "effort_level": "unknown",
+    "harness": "opencode",
+    "model": "deepseek-v4-pro",
+    "parameters": {
+      "model_release_date": "2026-04-24",
+      "native_effort_field": "--variant",
+      "native_effort_semantics": "provider_default_unverified",
+      "native_effort_status": "omitted",
+      "native_effort_value": null,
+      "native_model_id": "openrouter/deepseek/deepseek-v4-pro",
+      "native_supports_reasoning": true,
+      "native_supports_toolcall": true,
+      "openrouter_model_id": "deepseek/deepseek-v4-pro",
+      "routing_provider": "openrouter"
+    },
+    "provider": "deepseek",
+    "temperature": null
+  },
+  "denominators": {
+    "feature_level_whys": 40,
+    "reachable_feature_level_whys": 40,
+    "system_level_whys": 9,
+    "total_features": 120,
+    "total_gold_whys": 49
+  },
+  "evaluator": {
+    "effort_level": "extra-high",
+    "harness": "codex-cli",
+    "model": "gpt-5.5",
+    "parameters": {},
+    "provider": "openai",
+    "temperature": null
+  },
+  "evidence_audit": {
+    "denominator_excluded_unreachable_whys": 0,
+    "denominator_included_whys": 49,
+    "plan_only_not_reconstructed_count": 0,
+    "rule_without_why_count": 10,
+    "schema_version": "v06_evidence_bound_clean",
+    "ungrounded_reconstruction_count": 0,
+    "whys_with_plan_grounding": 39,
+    "whys_with_reconstruction_evidence": 39
+  },
+  "gold_why_totals": {
+    "possible_feature_why_count": 40,
+    "possible_feature_why_weight": 124,
+    "possible_gold_why_count": 49,
+    "possible_gold_why_weight": 152,
+    "possible_system_why_count": 9,
+    "possible_system_why_weight": 28
+  },
+  "intent_recovery": {
+    "excluded_unreachable_why_count": 0,
+    "feature_reachable_weight": 124,
+    "feature_recovered_weight": 74,
+    "reachable_feature_why_count": 40,
+    "reachable_gold_why_count": 49,
+    "reachable_system_why_count": 9,
+    "reachable_weight": 152,
+    "recovered_weight": 100,
+    "system_reachable_weight": 28,
+    "system_recovered_weight": 26,
+    "total_possible_weight": 152
+  },
+  "low_confidence": false,
+  "run_label": "",
+  "run_number": 1,
+  "schema_version": "1.0",
+  "scores": {
+    "combined": 8882,
+    "feature_level_fidelity": 0.5967741935483871,
+    "intent_fidelity": 0.6578947368421053,
+    "planning_quality": 0.8916666666666667,
+    "system_level_fidelity": 0.9285714285714286
+  },
+  "timestamp": "2026-05-26T23:01:42Z",
+  "timing": {
+    "phase1_completed_at": "2026-05-26T22:51:04Z",
+    "phase1_duration_seconds": 344.944,
+    "phase1_started_at": "2026-05-26T22:45:19Z",
+    "phase2a_completed_at": "2026-05-26T22:55:28Z",
+    "phase2a_duration_seconds": 263.828,
+    "phase2a_started_at": "2026-05-26T22:51:04Z",
+    "phase2b_completed_at": "2026-05-26T23:07:42Z",
+    "phase2b_duration_seconds": 733.749,
+    "phase2b_started_at": "2026-05-26T22:55:28Z",
+    "run_completed_at": "2026-05-26T23:07:42Z",
+    "run_duration_seconds": 1343.0,
+    "run_started_at": "2026-05-26T22:45:19Z",
+    "schema_version": "1.0",
+    "source": "runs_timing_json"
+  },
+  "weighted_totals": {
+    "feature_denominator": 124,
+    "feature_recovered": 74,
+    "feature_unreachable_excluded_weight": 0,
+    "intent_denominator": 152,
+    "intent_recovered": 100,
+    "system_denominator": 28,
+    "system_recovered": 26
+  }
+}

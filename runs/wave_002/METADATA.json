@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "unknown",
+  "candidate_model_default": "deepseek-v4-pro",
+  "completed_at": "2026-05-26T23:07:42Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-05-26T22:45:19Z",
+  "wave_number": 2
+}
