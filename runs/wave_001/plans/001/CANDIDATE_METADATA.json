@@ -1,0 +1,19 @@
+{
+  "model": "deepseek-v4-pro",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "deepseek",
+  "parameters": {
+    "model_release_date": "2026-04-24",
+    "native_effort_field": "--variant",
+    "native_effort_semantics": "provider_default_unverified",
+    "native_effort_status": "omitted",
+    "native_effort_value": null,
+    "native_model_id": "openrouter/deepseek/deepseek-v4-pro",
+    "native_supports_reasoning": true,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "deepseek/deepseek-v4-pro",
+    "routing_provider": "openrouter"
+  }
+}
