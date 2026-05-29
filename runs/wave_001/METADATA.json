@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "high",
+  "candidate_model_default": "claude-4.8-opus",
+  "completed_at": "2026-05-29T12:42:05Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-05-29T12:20:05Z",
+  "wave_number": 1
+}
