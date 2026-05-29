@@ -1,0 +1,13 @@
+{
+  "model": "claude-4.8-opus",
+  "effort_level": "max",
+  "temperature": null,
+  "harness": "claude-code",
+  "provider": "anthropic",
+  "parameters": {
+    "care_effort_rank_from_top": 0,
+    "native_effort_field": "--effort",
+    "native_effort_value": "max",
+    "native_model_id": "claude-opus-4-8"
+  }
+}
