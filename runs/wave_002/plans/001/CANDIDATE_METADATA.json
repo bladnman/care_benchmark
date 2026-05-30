@@ -1,0 +1,20 @@
+{
+  "model": "minimax-m2.7",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "minimax",
+  "parameters": {
+    "model_release_date": "2026-03-18",
+    "native_effort_field": "--variant",
+    "native_effort_semantics": "provider_default_unverified",
+    "native_effort_status": "unsupported_unavailable_omitted",
+    "native_effort_value": null,
+    "native_model_id": "openrouter/minimax/minimax-m2.7",
+    "native_supports_reasoning": true,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "minimax/minimax-m2.7",
+    "routing_provider": "openrouter",
+    "unsupported_requested_effort": "max"
+  }
+}
