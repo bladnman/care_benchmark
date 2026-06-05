@@ -1,0 +1,27 @@
+{
+  "commands": {
+    "phase1_invocation": {
+      "completed_at": "2026-06-05T04:55:02Z",
+      "duration_seconds": 528.21,
+      "returncode": 0,
+      "source": "care-control",
+      "started_at": "2026-06-05T04:46:14Z",
+      "status": "success"
+    }
+  },
+  "runs": {
+    "001": {
+      "phase1": {
+        "completed_at": "2026-06-05T04:55:02Z",
+        "duration_seconds": 528.21,
+        "returncode": 0,
+        "source": "care-control",
+        "started_at": "2026-06-05T04:46:14Z",
+        "status": "success"
+      }
+    }
+  },
+  "schema_version": "1.0",
+  "updated_at": "2026-06-05T04:55:02Z",
+  "wave": "wave_002"
+}
