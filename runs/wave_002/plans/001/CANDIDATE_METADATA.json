@@ -1,0 +1,19 @@
+{
+  "model": "qwen3-coder",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "qwen",
+  "parameters": {
+    "model_release_date": "2026-02-04",
+    "native_effort_field": "--variant",
+    "native_effort_semantics": "provider_default_unverified",
+    "native_effort_status": "omitted",
+    "native_effort_value": null,
+    "native_model_id": "openrouter/qwen/qwen3-coder-next",
+    "native_supports_reasoning": false,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "qwen/qwen3-coder-next",
+    "routing_provider": "openrouter"
+  }
+}
