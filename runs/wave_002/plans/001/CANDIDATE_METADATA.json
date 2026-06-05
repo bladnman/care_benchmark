@@ -1,0 +1,8 @@
+{
+  "model": "gpt-5.5",
+  "effort_level": "extra-high",
+  "harness": "cursor-agent",
+  "provider": "openai",
+  "temperature": null,
+  "parameters": {}
+}
