@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "extra-high",
+  "candidate_model_default": "claude-fable-5",
+  "completed_at": "2026-06-10T03:36:29Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-06-10T03:12:59Z",
+  "wave_number": 2
+}
