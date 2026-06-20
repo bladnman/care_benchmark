@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "unknown",
+  "candidate_model_default": "openrouter-z-ai-glm-5.2-z-ai-glm-5.2-glm-5.2-glm-z-ai-glm-5.2",
+  "completed_at": "2026-06-20T15:43:29Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-06-20T15:25:44Z",
+  "wave_number": 3
+}
