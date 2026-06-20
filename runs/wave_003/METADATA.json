@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "unknown",
+  "candidate_model_default": "openrouter-cohere-north-mini-code-free-cohere-north-mini-code-free-north-mini-code-free-north-cohere-north-mini-code-free",
+  "completed_at": "2026-06-20T15:49:59Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-06-20T15:37:28Z",
+  "wave_number": 3
+}
