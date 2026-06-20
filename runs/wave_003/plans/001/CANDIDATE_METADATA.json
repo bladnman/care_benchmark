@@ -1,0 +1,8 @@
+{
+  "model": "composer-2.5",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "cursor-agent",
+  "provider": "cursor",
+  "parameters": {}
+}
