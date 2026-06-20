@@ -1,0 +1,19 @@
+{
+  "model": "openrouter-z-ai-glm-5.2-z-ai-glm-5.2-glm-5.2-glm-z-ai-glm-5.2",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "unknown",
+  "parameters": {
+    "model_release_date": "2026-06-13",
+    "native_effort_field": "--variant",
+    "native_effort_semantics": "provider_default_unverified",
+    "native_effort_status": "omitted",
+    "native_effort_value": null,
+    "native_model_id": "openrouter/z-ai/glm-5.2",
+    "native_supports_reasoning": true,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "z-ai/glm-5.2",
+    "routing_provider": "openrouter"
+  }
+}
