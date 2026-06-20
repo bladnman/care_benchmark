@@ -1,0 +1,19 @@
+{
+  "model": "openrouter-cohere-north-mini-code-free-cohere-north-mini-code-free-north-mini-code-free-north-cohere-north-mini-code-free",
+  "effort_level": "unknown",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "unknown",
+  "parameters": {
+    "model_release_date": "2026-06-17",
+    "native_effort_field": "--variant",
+    "native_effort_semantics": "provider_default_unverified",
+    "native_effort_status": "omitted",
+    "native_effort_value": null,
+    "native_model_id": "openrouter/cohere/north-mini-code:free",
+    "native_supports_reasoning": true,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "cohere/north-mini-code:free",
+    "routing_provider": "openrouter"
+  }
+}
