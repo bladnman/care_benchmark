@@ -1,0 +1,13 @@
+{
+  "model": "claude-5-sonnet",
+  "effort_level": "medium",
+  "temperature": null,
+  "harness": "claude-code",
+  "provider": "anthropic",
+  "parameters": {
+    "care_effort_rank_from_top": 3,
+    "native_effort_field": "--effort",
+    "native_effort_value": "medium",
+    "native_model_id": "claude-sonnet-5"
+  }
+}
