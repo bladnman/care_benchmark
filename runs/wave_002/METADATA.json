@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "medium",
+  "candidate_model_default": "claude-5-sonnet",
+  "completed_at": "2026-06-30T21:29:18Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-06-30T21:10:51Z",
+  "wave_number": 2
+}
