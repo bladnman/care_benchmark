@@ -1,0 +1,13 @@
+{
+  "model": "gpt-5.6-sol",
+  "effort_level": "extra-high",
+  "harness": "codex-cli",
+  "provider": "openai",
+  "temperature": null,
+  "parameters": {
+    "care_effort_rank_from_top": 2,
+    "native_effort_field": "model_reasoning_effort",
+    "native_effort_value": "xhigh",
+    "native_model_id": "gpt-5.6-sol"
+  }
+}
