@@ -1,0 +1,17 @@
+{
+  "model": "kimi-k3",
+  "effort_level": "high",
+  "temperature": null,
+  "harness": "opencode",
+  "provider": "moonshot",
+  "parameters": {
+    "model_release_date": "2026-07-16",
+    "native_effort_field": "--variant",
+    "native_effort_value": "high",
+    "native_model_id": "openrouter/moonshotai/kimi-k3",
+    "native_supports_reasoning": true,
+    "native_supports_toolcall": true,
+    "openrouter_model_id": "moonshotai/kimi-k3",
+    "routing_provider": "openrouter"
+  }
+}
