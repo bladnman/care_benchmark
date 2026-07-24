@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "low",
+  "candidate_model_default": "kimi-k3",
+  "completed_at": "2026-07-24T12:47:33Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-07-24T12:31:37Z",
+  "wave_number": 3
+}
