@@ -1,0 +1,59 @@
+{
+  "commands": {
+    "phase1_invocation": {
+      "completed_at": "2026-08-12T23:12:21Z",
+      "duration_seconds": 573.99,
+      "returncode": 0,
+      "source": "care-control",
+      "started_at": "2026-08-12T23:02:47Z",
+      "status": "success"
+    },
+    "phase2a_invocation": {
+      "completed_at": "2026-08-12T23:15:18Z",
+      "duration_seconds": 177.122,
+      "returncode": 0,
+      "source": "care-control",
+      "started_at": "2026-08-12T23:12:21Z",
+      "status": "success"
+    },
+    "phase2b_invocation": {
+      "completed_at": "2026-08-12T23:23:45Z",
+      "duration_seconds": 506.694,
+      "returncode": 0,
+      "source": "care-control",
+      "started_at": "2026-08-12T23:15:18Z",
+      "status": "success"
+    }
+  },
+  "runs": {
+    "001": {
+      "phase1": {
+        "completed_at": "2026-08-12T23:12:21Z",
+        "duration_seconds": 573.99,
+        "returncode": 0,
+        "source": "care-control",
+        "started_at": "2026-08-12T23:02:47Z",
+        "status": "success"
+      },
+      "phase2a": {
+        "completed_at": "2026-08-12T23:15:18Z",
+        "duration_seconds": 177.122,
+        "returncode": 0,
+        "source": "care-control",
+        "started_at": "2026-08-12T23:12:21Z",
+        "status": "success"
+      },
+      "phase2b": {
+        "completed_at": "2026-08-12T23:23:45Z",
+        "duration_seconds": 506.694,
+        "returncode": 0,
+        "source": "care-control",
+        "started_at": "2026-08-12T23:15:18Z",
+        "status": "success"
+      }
+    }
+  },
+  "schema_version": "1.0",
+  "updated_at": "2026-08-12T23:23:45Z",
+  "wave": "wave_002"
+}
