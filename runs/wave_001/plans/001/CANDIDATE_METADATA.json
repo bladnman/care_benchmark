@@ -1,0 +1,13 @@
+{
+  "model": "gemini-3.7-flash",
+  "effort_level": "low",
+  "temperature": null,
+  "harness": "gemini-cli",
+  "provider": "google",
+  "parameters": {
+    "care_effort_rank_from_top": 2,
+    "native_effort_field": "thinkingLevel",
+    "native_effort_value": "LOW",
+    "native_model_id": "gemini-3.7-flash"
+  }
+}
