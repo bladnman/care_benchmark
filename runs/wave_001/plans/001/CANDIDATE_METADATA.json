@@ -1,0 +1,13 @@
+{
+  "model": "gpt-6-astra",
+  "effort_level": "high",
+  "temperature": null,
+  "harness": "codex-cli",
+  "provider": "openai",
+  "parameters": {
+    "care_effort_rank_from_top": 2,
+    "native_effort_field": "model_reasoning_effort",
+    "native_effort_value": "high",
+    "native_model_id": "gpt-6-astra"
+  }
+}
