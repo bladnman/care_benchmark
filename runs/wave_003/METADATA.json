@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "extra-high",
+  "candidate_model_default": "gpt-6-astra",
+  "completed_at": "2026-09-06T17:12:07Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-09-06T16:45:44Z",
+  "wave_number": 3
+}

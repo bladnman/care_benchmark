@@ -1,0 +1,3045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CARE · Report</title>
+<style>
+/* ─────────── reset + base ─────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #2c2826;
+  background: #fafaf8;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.mono { font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace; }
+.muted { color: #6b6663; }
+
+/* ─────────── layout ─────────── */
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+header.top { padding: 32px 0 8px; border-bottom: 1px solid #e8e4df; margin-bottom: 36px; }
+header.top h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+header.top h1 span.dot { color: #b9b3ad; padding: 0 6px; }
+header.top .run-meta { font-size: 13px; color: #6b6663; }
+
+main section { margin-bottom: 48px; }
+main h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b6663;
+  margin: 0 0 16px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #ebe7e2;
+}
+
+/* ─────────── hero ─────────── */
+.hero { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
+.hero .card {
+  background: #fff;
+  border: 1px solid #ebe7e2;
+  border-radius: 8px;
+  padding: 24px 22px;
+}
+.hero .card .label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b6663;
+  margin-bottom: 6px;
+}
+.hero .card .value {
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #2c2826;
+  line-height: 1.1;
+}
+.hero .card .value .unit { font-size: 18px; font-weight: 500; color: #6b6663; margin-left: 2px; }
+.hero .card.combined .value { color: #4a8755; }
+.hero .card .sub { margin-top: 8px; font-size: 13px; color: #6b6663; }
+
+.low-confidence-banner {
+  background: #fff5e6;
+  border: 1px solid #f0d9a8;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #6f4a1c;
+  margin-bottom: 16px;
+}
+.low-confidence-banner strong { color: #4d3210; }
+
+/* ─────────── scatter ─────────── */
+.scatter-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 320px); gap: 24px; align-items: start; }
+.scatter-svg-wrap { background: #fff; border: 1px solid #ebe7e2; border-radius: 8px; padding: 16px; }
+.scatter-svg { width: 100%; height: auto; display: block; }
+.scatter-axis { stroke: #d8d3cd; stroke-width: 1; }
+.scatter-grid { stroke: #f0ece7; stroke-width: 1; }
+.scatter-label { font-size: 11px; fill: #6b6663; }
+.scatter-axis-label { font-size: 12px; fill: #2c2826; font-weight: 500; }
+.scatter-point { fill: #4a8755; stroke: #fff; stroke-width: 2; }
+.scatter-point-glow { fill: #4a8755; opacity: 0.18; }
+.scatter-coord { font-size: 13px; color: #2c2826; margin-top: 8px; text-align: center; }
+
+.diagnostic-split { background: #fff; border: 1px solid #ebe7e2; border-radius: 8px; padding: 20px; }
+.diagnostic-split h3 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: #2c2826; }
+.split-row { margin-bottom: 14px; }
+.split-row:last-child { margin-bottom: 0; }
+.split-row .split-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+.split-row .split-label strong { font-weight: 600; }
+.split-row .split-bar { height: 8px; background: #f0ece7; border-radius: 4px; overflow: hidden; }
+.split-row .split-bar-fill { height: 100%; background: #4a8755; border-radius: 4px; transition: width 0.3s ease; }
+.split-row.feature .split-bar-fill { background: #6699aa; }
+
+/* ─────────── runtime metadata ─────────── */
+.runtime-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.runtime-card { background: #fff; border: 1px solid #ebe7e2; border-radius: 8px; padding: 20px; }
+.runtime-card h3 { margin: 0 0 12px; font-size: 13px; font-weight: 600; }
+.runtime-card .row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; border-bottom: 1px dotted #ebe7e2; }
+.runtime-card .row:last-child { border-bottom: none; }
+.runtime-card .row .k { color: #6b6663; }
+.runtime-card .row .v { font-family: "SF Mono", Monaco, monospace; font-size: 12px; color: #2c2826; }
+.runtime-card .row .v.empty { color: #b9b3ad; font-style: italic; font-family: inherit; }
+
+/* ─────────── filters + tables ─────────── */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; }
+.filter-bar .filter-label { font-size: 12px; color: #6b6663; margin-right: 4px; }
+.pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #d8d3cd;
+  background: #fff;
+  font-size: 12px;
+  color: #2c2826;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.pill:hover { background: #f4f1ec; }
+.pill.active { background: #2c2826; color: #fff; border-color: #2c2826; }
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #ebe7e2;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 13px;
+}
+table.data thead { background: #f4f1ec; }
+table.data th, table.data td { padding: 8px 12px; text-align: left; vertical-align: top; }
+table.data th {
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b6663;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  border-bottom: 1px solid #ebe7e2;
+}
+table.data th:hover { color: #2c2826; }
+table.data th .sort-arrow { display: inline-block; width: 10px; opacity: 0.4; margin-left: 4px; }
+table.data th.sorted .sort-arrow { opacity: 1; color: #4a8755; }
+table.data tbody tr { border-bottom: 1px solid #f4f1ec; }
+table.data tbody tr:last-child { border-bottom: none; }
+table.data tbody tr:hover { background: #faf7f3; }
+
+.evidence-cell {
+  max-width: 220px;
+  font-size: 12px;
+  color: #4d4845;
+}
+.evidence-cell.none { color: #9b4f4f; font-style: italic; }
+.denom-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #e8edf1;
+  color: #3e5866;
+}
+.denom-badge.unreachable_excluded { background: #ebe7e2; color: #6b6663; }
+.rule-flag { font-size: 10px; color: #7a5a14; background: #fcf3df; padding: 2px 6px; border-radius: 3px; }
+
+.recovery-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.recovery-badge.full { background: #e3efe6; color: #2d6a3d; }
+.recovery-badge.partial { background: #fcf3df; color: #7a5a14; }
+.recovery-badge.none { background: #f4e4e4; color: #7a3434; }
+.recovery-badge.unreachable { background: #ebe7e2; color: #6b6663; }
+
+.captured-tick { color: #4a8755; font-weight: 600; }
+.captured-x { color: #b06060; font-weight: 600; }
+.borderline-flag { font-size: 10px; color: #7a5a14; background: #fcf3df; padding: 1px 5px; border-radius: 3px; margin-left: 4px; }
+
+.layer-cells { display: inline-flex; gap: 3px; }
+.layer-cell {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  text-align: center;
+  font-size: 10px;
+  line-height: 18px;
+  font-weight: 600;
+}
+.layer-cell.recovered { background: #e3efe6; color: #2d6a3d; }
+.layer-cell.lost { background: #f4e4e4; color: #7a3434; }
+.layer-cell.na { background: #ebe7e2; color: #6b6663; }
+
+/* ─────────── prose sections ─────────── */
+.prose {
+  background: #fff;
+  border: 1px solid #ebe7e2;
+  border-radius: 8px;
+  padding: 24px 28px;
+  font-size: 15px;
+  line-height: 1.65;
+}
+.prose p { margin: 0 0 14px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose ul, .prose ol { margin: 0 0 14px; padding-left: 22px; }
+.prose li { margin-bottom: 6px; }
+.prose code { font-family: "SF Mono", Monaco, monospace; font-size: 13px; background: #f4f1ec; padding: 1px 5px; border-radius: 3px; }
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
+.prose blockquote {
+  margin: 0 0 14px;
+  padding: 8px 16px;
+  border-left: 3px solid #d8d3cd;
+  color: #6b6663;
+  font-style: italic;
+}
+
+/* ─────────── groupings ─────────── */
+.groupings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.grouping-card { background: #fff; border: 1px solid #ebe7e2; border-radius: 8px; padding: 18px; }
+.grouping-card h3 { margin: 0 0 12px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #6b6663; }
+.grouping-row { padding: 6px 0; font-size: 13px; }
+.grouping-row .grouping-label { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.grouping-row .grouping-bar { height: 6px; background: #f0ece7; border-radius: 3px; overflow: hidden; }
+.grouping-row .grouping-bar-fill { height: 100%; background: #4a8755; border-radius: 3px; }
+
+/* ─────────── footer ─────────── */
+footer.bottom {
+  margin-top: 64px;
+  padding: 24px 0 36px;
+  border-top: 1px solid #e8e4df;
+  font-size: 12px;
+  color: #6b6663;
+  text-align: center;
+}
+
+/* ─────────── responsive ─────────── */
+@media (max-width: 740px) {
+  .hero { grid-template-columns: 1fr; }
+  .scatter-row { grid-template-columns: 1fr; }
+  .runtime-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>CARE <span class="dot">·</span> <span id="hdr-instance">Pocket Aviary</span></h1>
+    <div class="run-meta">
+      Run <span id="hdr-run-number" class="mono"></span>
+      <span id="hdr-run-label-wrap" style="display:none"> · <span id="hdr-run-label"></span></span>
+      <span class="dot"> · </span>
+      <time id="hdr-timestamp" class="mono"></time>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- low-confidence banner (hidden unless planning < 30%) -->
+  <div id="low-conf" class="low-confidence-banner" style="display:none">
+    <strong>Low confidence:</strong> planning quality is below 30%. Fidelity reading is statistically degenerate (see SPEC §6); treat the fidelity number with caution.
+  </div>
+
+  <!-- HERO: three numbers -->
+  <section class="hero-section">
+    <h2>Headline</h2>
+    <div class="hero">
+      <div class="card">
+        <div class="label">Planning quality</div>
+        <div class="value"><span id="m-planning"></span><span class="unit">%</span></div>
+        <div class="sub">features captured ÷ total</div>
+      </div>
+      <div class="card">
+        <div class="label">Intent fidelity</div>
+        <div class="value"><span id="m-fidelity"></span><span class="unit">%</span></div>
+        <div class="sub">weighted whys recovered ÷ reachable</div>
+      </div>
+      <div class="card combined">
+        <div class="label">Combined quality</div>
+        <div class="value mono" id="m-combined"></div>
+        <div class="sub">planning% × 100 + fidelity% − 100</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2D scatter + diagnostic split -->
+  <section>
+    <h2>Where this run lands</h2>
+    <div class="scatter-row">
+      <div class="scatter-svg-wrap">
+        <svg id="scatter-svg" class="scatter-svg" viewBox="0 0 360 360" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="scatter-coord">
+          (<span id="m-coord-x" class="mono"></span>, <span id="m-coord-y" class="mono"></span>) on the planning × fidelity scatter
+        </div>
+      </div>
+      <div class="diagnostic-split">
+        <h3>Diagnostic split</h3>
+        <div class="split-row system">
+          <div class="split-label">System-level fidelity <strong><span id="m-sysfid"></span>%</strong></div>
+          <div class="split-bar"><div id="bar-sysfid" class="split-bar-fill"></div></div>
+        </div>
+        <div class="split-row feature">
+          <div class="split-label">Feature-level fidelity <strong><span id="m-featfid"></span>%</strong></div>
+          <div class="split-bar"><div id="bar-featfid" class="split-bar-fill"></div></div>
+        </div>
+        <div style="font-size: 12px; color: #6b6663; margin-top: 12px;">Feature-level is conditional on capture (denominator excludes features the planner missed).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- evidence-bound audit -->
+  <section>
+    <h2>Evidence-bound audit</h2>
+    <div class="groupings-grid" id="evidence-grid"></div>
+  </section>
+
+  <!-- runtime metadata -->
+  <section>
+    <h2>Run setup</h2>
+    <div class="runtime-grid">
+      <div class="runtime-card">
+        <h3>Candidate (under test)</h3>
+        <div class="row"><span class="k">Model</span><span class="v" id="cand-model">—</span></div>
+        <div class="row"><span class="k">Effort level</span><span class="v" id="cand-effort">—</span></div>
+        <div class="row"><span class="k">Temperature</span><span class="v" id="cand-temp">—</span></div>
+        <div class="row"><span class="k">Harness</span><span class="v" id="cand-harness">—</span></div>
+        <div class="row"><span class="k">Provider</span><span class="v" id="cand-provider">—</span></div>
+      </div>
+      <div class="runtime-card">
+        <h3>Evaluator</h3>
+        <div class="row"><span class="k">Model</span><span class="v" id="eval-model">—</span></div>
+        <div class="row"><span class="k">Effort level</span><span class="v" id="eval-effort">—</span></div>
+        <div class="row"><span class="k">Temperature</span><span class="v" id="eval-temp">—</span></div>
+        <div class="row"><span class="k">Harness</span><span class="v" id="eval-harness">—</span></div>
+        <div class="row"><span class="k">Provider</span><span class="v" id="eval-provider">—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- failure groupings -->
+  <section>
+    <h2>Failure groupings</h2>
+    <div class="groupings-grid" id="groupings-grid"></div>
+  </section>
+
+  <!-- features captured -->
+  <section>
+    <h2>Features captured (planning quality)</h2>
+    <div class="filter-bar">
+      <span class="filter-label">Filter:</span>
+      <button class="pill active" data-filter-features="all">All</button>
+      <button class="pill" data-filter-features="captured">Captured</button>
+      <button class="pill" data-filter-features="missed">Missed</button>
+      <button class="pill" data-filter-features="borderline">Borderline only</button>
+    </div>
+    <table class="data" id="features-table">
+      <thead>
+        <tr>
+          <th data-sort="id">#<span class="sort-arrow">▾</span></th>
+          <th data-sort="title">Feature<span class="sort-arrow">▾</span></th>
+          <th data-sort="file">File<span class="sort-arrow">▾</span></th>
+          <th data-sort="captured">Captured<span class="sort-arrow">▾</span></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- system-level whys -->
+  <section>
+    <h2>System-level whys (S1–S9)</h2>
+    <div class="filter-bar">
+      <span class="filter-label">Filter:</span>
+      <button class="pill active" data-filter-sys="all">All</button>
+      <button class="pill" data-filter-sys="full">Full</button>
+      <button class="pill" data-filter-sys="partial">Partial</button>
+      <button class="pill" data-filter-sys="none">None</button>
+      <button class="pill" data-filter-sys="affective">Affective only</button>
+      <button class="pill" data-filter-sys="functional">Functional only</button>
+    </div>
+    <table class="data" id="sys-table">
+      <thead>
+        <tr>
+          <th data-sort="id">ID<span class="sort-arrow">▾</span></th>
+          <th data-sort="title">Title<span class="sort-arrow">▾</span></th>
+          <th data-sort="weight">W<span class="sort-arrow">▾</span></th>
+          <th data-sort="type">Type<span class="sort-arrow">▾</span></th>
+          <th data-sort="denominator_status">Denom<span class="sort-arrow">▾</span></th>
+          <th>Recon evidence</th>
+          <th>PLAN grounding</th>
+          <th data-sort="identified_by_b">B identified?<span class="sort-arrow">▾</span></th>
+          <th data-sort="preserved_in_plan">PLAN preserved?<span class="sort-arrow">▾</span></th>
+          <th data-sort="rule_without_why">Rule w/o why<span class="sort-arrow">▾</span></th>
+          <th data-sort="recovery">Recovery<span class="sort-arrow">▾</span></th>
+          <th>Layers</th>
+          <th data-sort="note">Note<span class="sort-arrow">▾</span></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- feature-level whys -->
+  <section>
+    <h2>Feature-level whys (F1–F40)</h2>
+    <div class="filter-bar">
+      <span class="filter-label">Filter:</span>
+      <button class="pill active" data-filter-feat="all">All</button>
+      <button class="pill" data-filter-feat="full">Full</button>
+      <button class="pill" data-filter-feat="partial">Partial</button>
+      <button class="pill" data-filter-feat="none">None</button>
+      <button class="pill" data-filter-feat="unreachable">Unreachable</button>
+      <button class="pill" data-filter-feat="rule_without_why">Rule without why</button>
+      <button class="pill" data-filter-feat="affective">Affective only</button>
+      <button class="pill" data-filter-feat="functional">Functional only</button>
+    </div>
+    <table class="data" id="feat-table">
+      <thead>
+        <tr>
+          <th data-sort="id">ID<span class="sort-arrow">▾</span></th>
+          <th data-sort="title">Feature title<span class="sort-arrow">▾</span></th>
+          <th data-sort="weight">W<span class="sort-arrow">▾</span></th>
+          <th data-sort="type">Type<span class="sort-arrow">▾</span></th>
+          <th data-sort="feature_captured">Captured?<span class="sort-arrow">▾</span></th>
+          <th data-sort="denominator_status">Denom<span class="sort-arrow">▾</span></th>
+          <th>Recon evidence</th>
+          <th>PLAN grounding</th>
+          <th data-sort="rule_without_why">Rule w/o why<span class="sort-arrow">▾</span></th>
+          <th data-sort="recovery">Recovery<span class="sort-arrow">▾</span></th>
+          <th>Layers</th>
+          <th data-sort="note">Note<span class="sort-arrow">▾</span></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- prose: diagnostic patterns -->
+  <section>
+    <h2>Diagnostic patterns</h2>
+    <div class="prose" id="patterns-prose"></div>
+  </section>
+
+  <!-- prose: v2 recommendations -->
+  <section>
+    <h2>Recommendations for v2 hardening</h2>
+    <div class="prose" id="recommendations-prose"></div>
+  </section>
+
+  <!-- prose: methodology caveats -->
+  <section>
+    <h2>Methodology caveats</h2>
+    <div class="prose" id="caveats-prose"></div>
+  </section>
+
+</main>
+
+<footer class="bottom">
+  <div class="wrap">
+    Generated by phase 2 of the <code>CARE</code> runner. Companion artifacts: <code>RECONSTRUCTION.md</code>, <code>REPORT.md</code>, <code>SCORES.json</code>.
+  </div>
+</footer>
+
+<script>
+/* ─────────────────────────────────────────────────────────
+   REPORT_DATA
+   ─────────────────────────────────────────────────────────
+   The evaluator (phase 2) replaces the JSON object below
+   with a real one populated from this run. Schema reference:
+   the keys used here line up 1:1 with what the rendering JS
+   reads. All keys are required; arrays may be empty.
+
+   Prose fields ('patterns_prose', 'recommendations_prose',
+   'caveats_prose') accept simple HTML — <p>, <strong>, <em>,
+   <ul>/<ol>/<li>, <code>, <blockquote>. Not full markdown.
+*/
+const REPORT_DATA = /* {{REPORT_DATA_JSON}} */ {
+  "instance_name": "Pocket Aviary",
+  "run_number": 1,
+  "run_label": "",
+  "timestamp": "2026-09-06T17:06:46Z",
+  "low_confidence": false,
+  "candidate": {
+    "model": "gpt-6-astra",
+    "effort_level": "extra-high",
+    "temperature": null,
+    "harness": "codex-cli",
+    "provider": "openai"
+  },
+  "evaluator": {
+    "model": "gpt-5.5",
+    "effort_level": "extra-high",
+    "temperature": null,
+    "harness": "codex-cli",
+    "provider": "openai"
+  },
+  "scores": {
+    "planning_quality": 1.0,
+    "intent_fidelity": 0.9210526315789473,
+    "combined": 9992,
+    "system_level_fidelity": 0.9285714285714286,
+    "feature_level_fidelity": 0.9193548387096774
+  },
+  "denominators": {
+    "total_features": 120,
+    "features_captured": 120,
+    "total_gold_whys": 49,
+    "system_level_whys": 9,
+    "feature_level_whys": 40,
+    "reachable_feature_level_whys": 40
+  },
+  "gold_why_totals": {
+    "possible_gold_why_count": 49,
+    "possible_system_why_count": 9,
+    "possible_feature_why_count": 40,
+    "possible_gold_why_weight": 152,
+    "possible_system_why_weight": 28,
+    "possible_feature_why_weight": 124
+  },
+  "intent_recovery": {
+    "reachable_gold_why_count": 49,
+    "reachable_system_why_count": 9,
+    "reachable_feature_why_count": 40,
+    "excluded_unreachable_why_count": 0,
+    "recovered_weight": 140.0,
+    "reachable_weight": 152,
+    "total_possible_weight": 152,
+    "system_recovered_weight": 26.0,
+    "system_reachable_weight": 28,
+    "feature_recovered_weight": 114.0,
+    "feature_reachable_weight": 124
+  },
+  "weighted_totals": {
+    "intent_recovered": 140.0,
+    "intent_denominator": 152,
+    "system_recovered": 26.0,
+    "system_denominator": 28,
+    "feature_recovered": 114.0,
+    "feature_denominator": 124,
+    "feature_unreachable_excluded_weight": 0
+  },
+  "evidence_audit": {
+    "denominator_included_whys": 49,
+    "denominator_excluded_unreachable_whys": 0,
+    "whys_with_reconstruction_evidence": 48,
+    "whys_with_plan_grounding": 48,
+    "rule_without_why_count": 1,
+    "plan_only_not_reconstructed_count": 0,
+    "ungrounded_reconstruction_count": 0
+  },
+  "groupings": {
+    "by_type": [
+      {
+        "label": "Functional whys",
+        "weighted_recovered": 50.0,
+        "weighted_total": 54
+      },
+      {
+        "label": "Affective whys",
+        "weighted_recovered": 90.0,
+        "weighted_total": 98
+      }
+    ],
+    "by_weight": [
+      {
+        "label": "Weight-2 whys",
+        "weighted_recovered": 42.0,
+        "weighted_total": 44
+      },
+      {
+        "label": "Weight-3 whys",
+        "weighted_recovered": 98.0,
+        "weighted_total": 108
+      }
+    ],
+    "by_anchor": [
+      {
+        "label": "System-level whys",
+        "weighted_recovered": 26.0,
+        "weighted_total": 28
+      },
+      {
+        "label": "Feature-level whys (reachable)",
+        "weighted_recovered": 114.0,
+        "weighted_total": 124
+      }
+    ]
+  },
+  "features": [
+    {
+      "id": 1,
+      "title": "Headline product concept statement",
+      "file": "product_brief.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 2,
+      "title": "\"Feels alive, not robotic\" design-philosophy section",
+      "file": "product_brief.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 3,
+      "title": "\"Notice, never announce\" principle callout",
+      "file": "product_brief.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 4,
+      "title": "Voice-and-tone guide for product surface (naturalist + matter-of-fact)",
+      "file": "product_brief.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 5,
+      "title": "\"What this is not\" callout (game/Tamagotchi/social-network framing)",
+      "file": "product_brief.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 6,
+      "title": "Restraint-over-richness scope statement (start with 2 birds, max 7)",
+      "file": "product_brief.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 7,
+      "title": "Glossary of domain terms (bird, call, mood, etc.)",
+      "file": "concepts.md",
+      "captured": true,
+      "borderline": true,
+      "note": "Inclusive capture: no standalone glossary, but the plan operationally defines the core domain terms in engine, interaction, audio, and accessibility sections."
+    },
+    {
+      "id": 8,
+      "title": "Definition of \"presence\" (idle attention as interaction)",
+      "file": "concepts.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 9,
+      "title": "Definition of personality vector vs mood (slow vs fast timescale)",
+      "file": "concepts.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 10,
+      "title": "Definition of \"settle\" as user-initiated session end",
+      "file": "concepts.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 11,
+      "title": "Personality vector (boldness, social warmth, vocal frequency, plumage saturation, curiosity)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 12,
+      "title": "Personality drift function (low-pass filter)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 13,
+      "title": "Drift rate calibration (one week measurable, three weeks visible)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 14,
+      "title": "Personality drift is monotonic toward expressive, never punishing",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 15,
+      "title": "Mood state (fast-timescale, resets daily-ish)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 16,
+      "title": "Mood inputs (recent interactions, time of day, ambient events)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 17,
+      "title": "Procedural call grammar (motifs combined at runtime)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 18,
+      "title": "Per-bird call signature (recognizable by ear)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 19,
+      "title": "Chorus mixing (real chorus, not stacked loops)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 20,
+      "title": "Call timing shaped by personality (vocal-frequency trait)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 21,
+      "title": "Idle micro-motion (preen, scan, head-tilt, shuffle)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 22,
+      "title": "Mood-shaped idle motion",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 23,
+      "title": "Bird species pool for v1 (~6 species)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 24,
+      "title": "Bird naming (user-assigned at adoption; renameable)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 25,
+      "title": "Adoption flow (two starter birds auto-selected at signup)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 26,
+      "title": "Maximum 7 birds per aviary",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 27,
+      "title": "Adding a third+ bird (slow unlock based on aviary age, not score)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 28,
+      "title": "Personality vector persistence (server-side, never resets)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 29,
+      "title": "Mood persistence across sessions",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 30,
+      "title": "Bird-to-bird interaction (calls and reactions)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 31,
+      "title": "Bird identity stability (stable internal id)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 32,
+      "title": "Personality vector exposure (NEVER shown numerically)",
+      "file": "bird_engine.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 33,
+      "title": "Return-greeting on viewer arrival",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 34,
+      "title": "Greeting variation by absence length",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 35,
+      "title": "Greeting variation by bird boldness (bolder birds greet first)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 36,
+      "title": "Greeting stagger (multiple birds don't greet simultaneously)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 37,
+      "title": "No \"Welcome back!\" toast or banner",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 38,
+      "title": "Listen-in interaction (focus a bird; its call rises in the mix)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 39,
+      "title": "Listen-in mix decay (other birds quiet, don't go silent)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 40,
+      "title": "Offer interaction (seed, song fragment, still pool)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 41,
+      "title": "Offer reaction varies by bird mood and curiosity",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 42,
+      "title": "Offer cooldown (per-bird cooldown of a few minutes)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 43,
+      "title": "Settle gesture (user-initiated session end; lighting shifts to evening)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 44,
+      "title": "Settle is opt-in (closing the tab is also valid; not penalized)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 45,
+      "title": "Field notebook auto-entries (specific naturalist tone)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 46,
+      "title": "Field notebook entry frequency (rare; only for noteworthy moments)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 47,
+      "title": "Field notebook is read-only (user cannot edit entries)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 48,
+      "title": "Presence accounting (idle attention counted as interaction)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 49,
+      "title": "Presence accounting requires tab focus + cursor + visibility",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 50,
+      "title": "No streak counter, no \"days visited\" display",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 51,
+      "title": "Background-tab pause (client renders only when visible; sim continues server-side)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 52,
+      "title": "Click-anywhere-to-undo for the settle gesture (5s window)",
+      "file": "interactions.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 53,
+      "title": "Single horizontal scene (one screen, no panning)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 54,
+      "title": "Three perch zones (front, middle, back) shape proximity to viewer",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 55,
+      "title": "Bird-chosen perch (birds choose perch; user does not place birds)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 56,
+      "title": "Day/night cycle tied to user's local time",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 57,
+      "title": "Evening palette shift (warmer hues; calls quieter)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 58,
+      "title": "Night state (most birds settled; one nightjar-like bird active)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 59,
+      "title": "Ambient weather (rare passing rain; soft wind)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 60,
+      "title": "Weather affects mood (rain dampens vocal frequency)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 61,
+      "title": "Ambient leaf/feather drift motion",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 62,
+      "title": "Foreground/background parallax (subtle; not parallax-heavy)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 63,
+      "title": "No UI chrome inside the aviary view (icons live in a thin top bar)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 64,
+      "title": "Top bar contents (account, settings, accessibility, field notebook, offer affordance)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 65,
+      "title": "Top bar auto-fades when cursor is idle",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 66,
+      "title": "Aviary scene loads with motion already in progress",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 67,
+      "title": "Loading state is a quiet field, not a spinner",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 68,
+      "title": "Empty-aviary state (between adoption flow and first bird arriving)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 69,
+      "title": "Color palette spec (calm, naturalist; avoids saturated UI accent colors)",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 70,
+      "title": "Aviary scene is responsive but never crops a bird out of frame",
+      "file": "aviary_layout.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 71,
+      "title": "Email + magic-link sign-in (no passwords)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 72,
+      "title": "Magic link expiry (15 minutes)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 73,
+      "title": "Single-user accounts (one aviary per account at v1)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 74,
+      "title": "Synthetic account ID (not email-derived) for internal references",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 75,
+      "title": "Server-side simulation tick (slow cadence, ~once per minute)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 76,
+      "title": "Client pulls state snapshot on visibility",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 77,
+      "title": "Client interpolates between snapshots for smooth motion",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 78,
+      "title": "Multi-device sync (state is canonical server-side)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 79,
+      "title": "Last-write-wins is forbidden for personality state",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 80,
+      "title": "Conflict resolution: server tick is the only writer of personality drift",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 81,
+      "title": "Sync conflict surface (account-level errors, matter-of-fact tone)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 82,
+      "title": "Per-device session token (revocable from settings)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 83,
+      "title": "Account export (download a JSON snapshot of your aviary)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 84,
+      "title": "Account deletion (soft-delete, 30-day grace, then hard-delete)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 85,
+      "title": "No telemetry on per-bird interactions for ML model training",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 86,
+      "title": "Aggregate-only telemetry (counts, latencies; never per-bird state)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 87,
+      "title": "Privacy policy link in account settings",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": true,
+      "note": "Inclusive capture: the plan specifies settings/privacy copy and privacy/account settings surfaces, though it does not literally say privacy policy link."
+    },
+    {
+      "id": 88,
+      "title": "Email change flow (verify new address before switching)",
+      "file": "accounts_sync.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 89,
+      "title": "Visit invitations (email-based, opt-in per invite)",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 90,
+      "title": "Visits default OFF for new accounts",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 91,
+      "title": "Visit is read-only ambient view (no interaction by visitor)",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 92,
+      "title": "Visitor cannot trigger greetings, listen-in, or offers",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 93,
+      "title": "No chat, no comments, no avatars during visits",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 94,
+      "title": "No \"your friend visited!\" notification by default",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 95,
+      "title": "Visit revocation (host can revoke invite at any time)",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 96,
+      "title": "Visit log (host can see who visited and when, in account settings)",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 97,
+      "title": "Visitor sees host's aviary as it is (no special \"show-off\" mode)",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 98,
+      "title": "No leaderboards, no aviary discovery feed, no public aviaries",
+      "file": "social_optional.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 99,
+      "title": "Screen-reader narration of aviary state (running prose)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 100,
+      "title": "Narration cadence is slow (no overwhelming the SR)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 101,
+      "title": "Narration prose is naturalist, not announcement-style",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 102,
+      "title": "Reduced-motion mode (slow cross-fades replace micro-motion)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 103,
+      "title": "Reduced-motion mode preserves charm (not a stripped fallback)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 104,
+      "title": "Captioning toggle for procedural calls (text describes mood)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 105,
+      "title": "WCAG AA contrast on all user-copy surfaces",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 106,
+      "title": "Keyboard-only navigation through all interactive surfaces",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 107,
+      "title": "Focus indicators visible against the aviary background",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 108,
+      "title": "Initial JS bundle <2MB",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 109,
+      "title": "Time to first bird visible <500ms target on mid-tier mobile/4G",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 110,
+      "title": "60fps idle motion target on 5-year-old laptop",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 111,
+      "title": "No memory growth over 30-minute session",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 112,
+      "title": "Procedural audio synthesized client-side (no large audio downloads)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 113,
+      "title": "Audio fallback for browsers without WebAudio (graceful silence + captions)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 114,
+      "title": "Performance observability (synthetic + RUM, aggregate-only)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 115,
+      "title": "Error budget on simulation-tick latency (alarms if >5s p99)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 116,
+      "title": "Browser support matrix (last 2 majors of Chrome/Safari/Firefox/Edge)",
+      "file": "accessibility_perf.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 117,
+      "title": "Out of scope: native mobile app",
+      "file": "non_goals.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 118,
+      "title": "Out of scope: gamification (achievements, streaks, scores)",
+      "file": "non_goals.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 119,
+      "title": "Out of scope: Tamagotchi-style mechanics (death, hunger, distress)",
+      "file": "non_goals.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    },
+    {
+      "id": 120,
+      "title": "Out of scope: social network surfaces (profiles, follows, public feed)",
+      "file": "non_goals.md",
+      "captured": true,
+      "borderline": false,
+      "note": ""
+    }
+  ],
+  "system_whys": [
+    {
+      "id": "S1",
+      "title": "feels-alive-not-robotic",
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R3: \"appears to have been continuing before the viewer arrived\"; R31: first-bird tied to \"a real visible persisted bird\".",
+      "plan_grounding": "P7: \"appears to have been continuing before the viewer arrived\"; P296: first poses are rendered before paint; P308: quiet field fallback.",
+      "identified_by_b": true,
+      "preserved_in_plan": true,
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Recovered as a cross-cutting aliveness principle across first paint, server ticking, audio/performance, and loading."
+    },
+    {
+      "id": "S2",
+      "title": "notice-never-announce",
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R21: \"no welcome message, toast, banner, countdown, badge\"; R69: arrival notice avoids \"welcome banner or counter\".",
+      "plan_grounding": "P20: no welcome, scores, streaks, counters, reminders; P252: \"A greeting is the only welcome surface\"; P400: no countdowns or celebratory unlocks.",
+      "identified_by_b": true,
+      "preserved_in_plan": true,
+      "rule_without_why": false,
+      "recovery": "partial",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": false
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "The rule and many surfaces survived, but the processed-vs-seen affective rationale is compressed to general quietness."
+    },
+    {
+      "id": "S3",
+      "title": "charm-from-specificity",
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R19: product prompts use \"specific, lowercase naturalist prose\"; R77: notebook records noteworthy aviary observations, not feed or stats.",
+      "plan_grounding": "P22: specific lowercase naturalist prose; P390: authored naturalist grammar from known facts; P394: avoid session logs and numeric deltas.",
+      "identified_by_b": true,
+      "preserved_in_plan": true,
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Specific naturalist observation is preserved across notebook, captions, narration, naming, and anti-dashboard choices."
+    },
+    {
+      "id": "S4",
+      "title": "restraint-over-richness",
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R17: individuality remains recognizable without dashboards; R79: single responsive scene with three depth zones; R301: seven birds do not justify a large engine.",
+      "plan_grounding": "P12: two starters and adoption up to seven; P314: no panning or placement tools; P320: muted natural palette; P517: seven-bird call review.",
+      "identified_by_b": true,
+      "preserved_in_plan": true,
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "The plan and reconstruction both favor recognizability and a fitted one-screen aviary over extra geography or variety."
+    },
+    {
+      "id": "S5",
+      "title": "naturalist-voice-with-system-exception",
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R19: naturalist observation with \"system language reserved for account and control surfaces\"; R99: two registers for copy.",
+      "plan_grounding": "P22: product observations/prompts versus system language; P103: matter-of-fact errors; P360: sound control uses system language.",
+      "identified_by_b": true,
+      "preserved_in_plan": true,
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "The voice split is explicit and inherited by product, account, sync, settings, and accessibility surfaces."
+    },
+    {
+      "id": "S6",
+      "title": "presence-is-real-interaction",
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R7: watching is valid attention and absence is never punishment; R247: present means visible, focused, trusted recent input; R275: settle cannot generate presence.",
+      "plan_grounding": "P236: exact present conjunction; P244: union intervals across devices; P274: closing without settle has zero special penalty; P483: settle versus close test.",
+      "identified_by_b": true,
+      "preserved_in_plan": true,
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Recovered across exact presence, drift dominance, interval unioning, settle/close equivalence, and absence non-punishment."
+    },
+    {
+      "id": "S7",
+      "title": "simulation-runs-server-side",
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R11: \"The server owns truth; clients render and express it\"; R209: scheduling every active aviary; R215: catch-up from persisted checkpoints.",
+      "plan_grounding": "P64: worker advances whether clients are connected; P150: schedule every active aviary; P167: catch up from persisted state; P280: no vector merge client-side.",
+      "identified_by_b": true,
+      "preserved_in_plan": true,
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Server canonical state, client rendering, multi-device coherence, and no local replay are all recovered."
+    },
+    {
+      "id": "S8",
+      "title": "privacy-first-on-bird-data",
+      "weight": 2,
+      "type": "functional",
+      "multi_layer": false,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R25: \"Private simulation input is used only to advance its owner's aviary\"; R397: no warehouse, SDK, training, recommendations, or population analysis.",
+      "plan_grounding": "P414: private input only advances the owner aviary; P416: no analytics warehouse or training; P466: metrics exclude state, names, vectors, and per-account sequences.",
+      "identified_by_b": true,
+      "preserved_in_plan": true,
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Recovered as a technical data-pipeline boundary, not only policy language."
+    },
+    {
+      "id": "S9",
+      "title": "accessibility-as-first-class-surface",
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R23: \"Accessibility is the same product\" and starts in the first two-bird scene; R359: reduced motion keeps moods, calls, captions, drift, and notebook.",
+      "plan_grounding": "P370: implement accessibility during first scene; P382: reduced mode keeps moods, calls, captions, drift, notebook; P519: SR review must hear paced observations.",
+      "identified_by_b": true,
+      "preserved_in_plan": true,
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Recovered as same-product charm, designed reduced motion/narration, and launch-time accessibility work."
+    }
+  ],
+  "feature_whys": [
+    {
+      "id": "F1",
+      "title": "presence-definition",
+      "feature_id": 8,
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R247: present requires \"visible, focused, and trusted pointermove or keydown\"; open tabs and focus alone do not count.",
+      "plan_grounding": "P236: visible plus focus plus trusted recent input; P238: open tab and focus alone do not count; P242: bounded failure.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Exact conjunction, shortcut rejection, and population-drift risk are recovered."
+    },
+    {
+      "id": "F2",
+      "title": "drift-function",
+      "feature_id": 12,
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R15: \"persistent low-pass filter\" and \"perceptual targets\"; R445: week-one evidence and week-three observable differences.",
+      "plan_grounding": "P190-P200: low-pass equation and week-seven/week-21 targets; P515: week-one numerical, week-three observable; P563: too fast/slow risk.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Slow low-pass calibration and failure modes are recovered."
+    },
+    {
+      "id": "F3",
+      "title": "drift-monotonic-toward-expressive",
+      "feature_id": 14,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R7: absence never punishment; R221: nonnegative doses rather than penalties; R227: no reducing traits or sad/hungry states after leaving.",
+      "plan_grounding": "P202: vector cannot fall and quietness is not trait reduction; P478: vectors never decrease; P580: interact without care obligations.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Monotonic positive drift and no-absence-punishment rationale are recovered."
+    },
+    {
+      "id": "F4",
+      "title": "procedural-call-grammar",
+      "feature_id": 17,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R87: recognizable living birds without recorded loops; R327: procedural variation; R337: avoids mechanical choruses; R341: no recorded fallback.",
+      "plan_grounding": "P334-P338: motif grammars, identity seed, no recordings or loops; P344: avoid synchronized starts; P360: no recorded-audio fallback.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Procedural audio rationale, chorus dependency, and fallback cascade survived."
+    },
+    {
+      "id": "F5",
+      "title": "mood-shaped-idle-motion",
+      "feature_id": 22,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R229: moods produce observable motion, perch, and call variation without flicker.",
+      "plan_grounding": "P208-P218: five moods with motion/perch/call expression; P324: drowsy is living posture, not paused animation.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Mood is expressed through motion rather than labels."
+    },
+    {
+      "id": "F6",
+      "title": "bird-count-cap-7",
+      "feature_id": 26,
+      "weight": 2,
+      "type": "functional",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R17: individuality remains recognizable through call signatures and call-identification review; R517: review covers two, three, five, and seven birds.",
+      "plan_grounding": "P12: adoption up to seven birds; P517: blind identification at two, three, five, and seven; P551: seven-bird capability is gated by recognition.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Seven-bird cap is tied to recognizability rather than arbitrary scope."
+    },
+    {
+      "id": "F7",
+      "title": "personality-vector-persistence",
+      "feature_id": 28,
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R5: identities and personalities survive sessions, devices, deployments, migrations; R161: stable UUIDs and current vectors; R181: migrations preserve vectors.",
+      "plan_grounding": "P80: current vector and filters stored per bird; P99: migrations preserve UUIDs and exact vectors; P171: rollback cannot restore older drift.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Canonical persisted personality and downstream sync/migration consequences are recovered."
+    },
+    {
+      "id": "F8",
+      "title": "personality-vector-never-numerical",
+      "feature_id": 32,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R17: individuality remains recognizable without labels or dashboards; R197: snapshots have no vectors or private inputs; R349: no trait values in labels/debug.",
+      "plan_grounding": "P20: no personality dashboard or raw mood badge; P132: no vector fields or five-number object; P370: never put trait values into labels or debug attributes.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "The reconstruction captures the relationship-protecting reason for hiding trait numbers, with the export exception kept isolated."
+    },
+    {
+      "id": "F9",
+      "title": "return-greeting",
+      "feature_id": 33,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R69: greetings vary by absence, mood, warmth, boldness, and history; R261: one return cannot make every bird greet; R263: greeting is the only welcome surface.",
+      "plan_grounding": "P248-P252: arrival event, weighted greeter, 1-2 second cue, no synchronized chorus, no toast/banner/text/counter.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Single varied bird notice and anti-canned arrival behavior are recovered."
+    },
+    {
+      "id": "F10",
+      "title": "no-welcome-back-toast",
+      "feature_id": 37,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R21: no welcome message, toast, banner, countdown, badge; R263: greeting as only welcome surface without toast/banner/user-addressed text.",
+      "plan_grounding": "P20: no welcome message; P252: bird greeting is only welcome surface and no toast/banner/text/counter.",
+      "rule_without_why": false,
+      "recovery": "partial",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": false
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "The rule and adjacent variants survived, but the reconstruction compresses the well-meaning-toast/reframed-session rationale."
+    },
+    {
+      "id": "F11",
+      "title": "settle-is-opt-in",
+      "feature_id": 44,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R75: settle stops presence/listen without penalty; R275: close expiry and re-engagement cannot generate presence forever.",
+      "plan_grounding": "P272: undo/re-engagement details; P274: closing without settling has zero special penalty or different drift weighting; P483: settle versus close test.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Optional settle and close-tab equivalence are recovered."
+    },
+    {
+      "id": "F12",
+      "title": "field-notebook-auto-entries",
+      "feature_id": 45,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R77: noteworthy observations, not feed or stats log, with evidence/cooldown/immutability; R367: authored naturalist grammar; R371: sparse specificity.",
+      "plan_grounding": "P390: authored naturalist grammar from known facts; P392: one every two to four days target; P394: avoid session logs and vector deltas; P396: immutable/no edit routes.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Naturalist prose, concentrated voice, rarity, and read-only boundaries are recovered."
+    },
+    {
+      "id": "F13",
+      "title": "presence-accounting",
+      "feature_id": 48,
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R247: exact visible/focused/recent-input conjunction; R251: measured spans with bounded failure; R253: two devices cannot double-count one second.",
+      "plan_grounding": "P236-P244: present state, segment caps, interval union, no offline queue, no visitor presence path.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Implementation-level presence accounting and silent inflation controls are recovered."
+    },
+    {
+      "id": "F14",
+      "title": "no-streak-counter",
+      "feature_id": 50,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R9: forbids scores, achievements, streaks, counters, rankings, reminders; R375: no visited days or observations of user habits.",
+      "plan_grounding": "P20: no scores, achievements, streaks, counters; P394: avoid visited-day counts and user-habit observations; P422: export excludes visit streaks.",
+      "rule_without_why": false,
+      "recovery": "partial",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": false
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "The absolute exclusion and disguised variants survived, but the user-intention rotation from birds to counter is not explicitly reconstructed."
+    },
+    {
+      "id": "F15",
+      "title": "scene-loads-with-motion",
+      "feature_id": 66,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R3: ordinary navigation always begins mid-action; R303: one rendering tree from first paint; R307: quiet field is not a substitute first bird.",
+      "plan_grounding": "P296: first poses rendered into HTML and already mid-action; P308: quiet field fallback; P451: never claim loading field as first-bird success.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "First-frame continuity and no-spinner loading rationale are recovered."
+    },
+    {
+      "id": "F16",
+      "title": "synthetic-account-id",
+      "feature_id": 74,
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R151: encrypted email plus blind index without relational/log/trace/queue/analytics use; R385: account UUID independent of email.",
+      "plan_grounding": "P75: email stored only on account; P406: neither email nor lookup index is a sharding, log, trace, queue, or analytics field.",
+      "rule_without_why": false,
+      "recovery": "partial",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": false
+        }
+      ],
+      "note": "PII leakage prevention is recovered; the impossible-to-retrofit downstream rationale is not explicit."
+    },
+    {
+      "id": "F17",
+      "title": "server-side-simulation-tick",
+      "feature_id": 75,
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R11: server owns truth and clients render; R209: every active aviary is scheduled; R215: missed ticks catch up from persisted checkpoints.",
+      "plan_grounding": "P64: worker advances when no clients are connected; P150: schedule every active aviary; P167: catch-up from persisted state; P486: no client replay/reset.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Server-side ticking, multi-device coherence, and client-tick failure avoidance are recovered."
+    },
+    {
+      "id": "F18",
+      "title": "no-last-write-wins-personality",
+      "feature_id": 79,
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R11: clients do not own state or merge vectors; R199: command acceptance is ordered and idempotent; R481: controls prevent client overwrite and stale-replica corruption.",
+      "plan_grounding": "P36: only the minute tick writes canonical personality/mood; P124: clients send events; P280: no vector is merged client-side; P567: tick-only write role.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Recovered through no-client-write, event-log, and stale-overwrite safeguards, although not under the exact last-write-wins phrase."
+    },
+    {
+      "id": "F19",
+      "title": "sync-conflict-matter-of-fact",
+      "feature_id": 81,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R187: matter-of-fact error codes and safe messages with clear system language; R297: expired sessions show sign-in in system language.",
+      "plan_grounding": "P103: matter-of-fact safe messages; P290: settings/name conflict is not personality-history merge; P22: system surfaces use ordinary language.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "System error clarity over naturalist charm is recovered."
+    },
+    {
+      "id": "F20",
+      "title": "no-per-bird-ml-telemetry",
+      "feature_id": 85,
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R25: private simulation input only advances its owner aviary; R397: no warehouse, behavioral SDK, training, recommendations, or population analysis.",
+      "plan_grounding": "P414: private input only advances owner aviary; P416: no training/recommendations/population bird analysis; P466: collector cannot capture per-account sequences or state.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "The private-relationship data boundary and technical pipeline separation are recovered."
+    },
+    {
+      "id": "F21",
+      "title": "visit-read-only-ambient",
+      "feature_id": 91,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R27: sharing is render-only and visitors have no interaction endpoints; R91: deliberate private sharing without co-presence or visitor influence.",
+      "plan_grounding": "P141-P144: visit snapshot only, no owner endpoints; P504: render-only and no visitor input to host vectors, presence, greetings, notebook.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Visitor observation without host drift or co-presence is recovered."
+    },
+    {
+      "id": "F22",
+      "title": "no-friend-visited-notification",
+      "feature_id": 94,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R93: visit log is access transparency, not engagement; R105: visit email is narrow, off by default, and forbids reminders/campaign infrastructure.",
+      "plan_grounding": "P31: off-by-default opt-in visit email and no push/toasts/badges; P432: log is transparency, not engagement; toggle never enabled implicitly.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Default silence and attention-loop avoidance are recovered."
+    },
+    {
+      "id": "F23",
+      "title": "no-leaderboards-no-discovery",
+      "feature_id": 98,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R9: rejects scores, streak-like metrics, and hidden engagement rankings; R97: scope protection against public discovery and competitive rankings.",
+      "plan_grounding": "P20: no public discovery, feeds, profiles, scores, or rankings; P416: no population bird analysis; P553: ramp never uses engagement metrics.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Public comparison surfaces and underlying aggregate metrics are refused."
+    },
+    {
+      "id": "F24",
+      "title": "sr-narration-running-prose",
+      "feature_id": 99,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R351: narration is naturalist scene awareness, not system announcement or raw event log; R353: paced observations prioritize gestures without flooding.",
+      "plan_grounding": "P374-P378: initial naturalist paragraph, 45-second routine updates, bounded queue, no raw event logs; P519: screen reader review rejects event lists.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Running prose, same-product voice, and implementation consequences are recovered."
+    },
+    {
+      "id": "F25",
+      "title": "reduced-motion-mode",
+      "feature_id": 102,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R23: reduced motion must still be a living series of still poses; R359: cross-fades retain moods, calls, captions, drift, notebook, greetings, and offers.",
+      "plan_grounding": "P382: reduced mode cross-fades still poses and keeps moods/calls/captions/drift/notebook; P519: review must see living still poses.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Reduced motion is recovered as a designed alternate rendering, not stripped fallback."
+    },
+    {
+      "id": "F26",
+      "title": "time-to-first-bird-500ms",
+      "feature_id": 109,
+      "weight": 2,
+      "type": "functional",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R31: performance is actual aviary, not landing-page score; first-bird mark tied to persisted bird, not quiet field or placeholder.",
+      "plan_grounding": "P436: performance is actual animated aviary; P441: first bird below 500 ms; P451: never substitute random bird or loading field.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Affective-performance threshold is recovered."
+    },
+    {
+      "id": "F27",
+      "title": "no-gamification",
+      "feature_id": 118,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R9: rejects game and engagement mechanics, including scores, achievements, streaks, counters, and rankings; R487: scope expansion into counters is a feature-drift risk.",
+      "plan_grounding": "P20: no game/care mechanics or hidden engagement rankings; P519: QA rejects reward vocabulary and engagement numbers; P578: explicit non-goal review.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Explicit no-gamification survives as scope protection against engagement creep."
+    },
+    {
+      "id": "F28",
+      "title": "no-tamagotchi-mechanics",
+      "feature_id": 119,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R7: absence never damages birds or creates an obligation; R43: no penalty, guilt, care debt, or distress; R227: no wary/sad/hungry/distressed states from leaving.",
+      "plan_grounding": "P20: no hunger, death, distress, declining happiness; P202: quietness is not trait reduction; P580: interact without care obligations.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Observational relationship and no absence punishment are recovered."
+    },
+    {
+      "id": "F29",
+      "title": "starter-birds-not-catalog",
+      "feature_id": 25,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R61: stable initial relationship, not chooser/catalog; system chooses starters, persists seeds, and refresh cannot reroll birds.",
+      "plan_grounding": "P398: system chooses starters and persists seeds before names; P310: new-account adoption is the sole empty-to-bird sequence.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Starter birds are arrivals with names, not catalog picks."
+    },
+    {
+      "id": "F30",
+      "title": "age-based-new-bird-offers",
+      "feature_id": 27,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R63: optional age-based adoption is pacing, not reward; R381: later adoption is quiet, deliberate, and without countdowns or achievements; R463: ramp is quality validation, not attention reward.",
+      "plan_grounding": "P38: eligibility does not depend on activity and is not reward milestones; P400: eligibility solely by aviary age with no countdowns or rewards; P551: never accelerate because of beta or feedback.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Age-based growth and rejection of attention-score unlocks are recovered."
+    },
+    {
+      "id": "F31",
+      "title": "stable-bird-identity",
+      "feature_id": 31,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R5: continuity is central across sessions, devices, deployments, migrations; R179: renaming cannot change identity; R181: migrations preserve UUIDs and vectors.",
+      "plan_grounding": "P80: stable bird UUID and immutable call seed; P97: names are not keys and renaming preserves identity; P99: migrations preserve UUIDs and vectors.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Stable identity is recovered beyond mere current-value persistence."
+    },
+    {
+      "id": "F32",
+      "title": "mood-persists-across-sessions",
+      "feature_id": 29,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R65: persistent mood is canonical, not invented by rendering; R231: mood refresh avoids resetting to default at midnight or tab open.",
+      "plan_grounding": "P218: mood refresh does not replace current state with default on tab open; P487: no tab-open mood reset.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Mood continuity across sessions is recovered."
+    },
+    {
+      "id": "F33",
+      "title": "field-notebook-read-only-observer-record",
+      "feature_id": 47,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "none",
+      "plan_grounding": "none",
+      "rule_without_why": true,
+      "recovery": "none",
+      "layers": [],
+      "note": "The no-edit rule is present, but the observer-record-versus-user-journal rationale is not grounded in either artifact."
+    },
+    {
+      "id": "F34",
+      "title": "account-export-relationship-copy",
+      "feature_id": 83,
+      "weight": 2,
+      "type": "functional",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R53: account export is private portability and isolated from UI/analytics; R401: export is not a UI stats panel or raw history dump.",
+      "plan_grounding": "P115-P116: explicit owner-requested export and private download; P422: consistent snapshot and not stats/history/secrets; P30: isolated vector exception.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Quiet private portability is recovered."
+    },
+    {
+      "id": "F35",
+      "title": "account-deletion-grace-then-hard-delete",
+      "feature_id": 84,
+      "weight": 4,
+      "type": "functional",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R55: recoverable deletion before a hard deadline; R403: final erasure and deletion journal replay honor the hard-deletion promise.",
+      "plan_grounding": "P424: exact 30-day recovery deadline and same UUID/vector restore; P426: delete account, aviary, birds, vectors, notebook, jobs, exports; P428: backups honor deletion.",
+      "rule_without_why": false,
+      "recovery": "partial",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": false
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Soft grace and whole-account erasure survived; the privacy reason for hard deletion is compressed."
+    },
+    {
+      "id": "F36",
+      "title": "aggregate-telemetry-boundary",
+      "feature_id": 86,
+      "weight": 2,
+      "type": "functional",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R399: aggregate operations data has no stable IDs; R429: metrics avoid payloads, names, vectors, offered items, presence totals, and per-account sequences.",
+      "plan_grounding": "P416: collector separated from simulation tables; P466: no payloads, names, vectors, presence totals, or stable visitor identity; P464: anonymous coarse histograms only.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Technical telemetry boundary is recovered."
+    },
+    {
+      "id": "F37",
+      "title": "per-invite-named-sharing",
+      "feature_id": 89,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R91: individually issued, emailed, expiring, revocable render-only invitations; R117: recipient UUID avoids silent signup.",
+      "plan_grounding": "P138-P144: host supplies recipient email, one-time grants, revocation; P410: invite is one-time, short-lived after use, and revocable.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Deliberate named sharing without ambient discoverability is recovered."
+    },
+    {
+      "id": "F38",
+      "title": "visit-log-on-demand-transparency",
+      "feature_id": 96,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R93: on-demand visit log is access transparency, not engagement, with no badges or unsolicited display.",
+      "plan_grounding": "P142: on-demand visit log with no badges; P432: visit log is transparency about access, not engagement surface.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Transparency without attention demand is recovered."
+    },
+    {
+      "id": "F39",
+      "title": "visitor-sees-actual-aviary",
+      "feature_id": 97,
+      "weight": 2,
+      "type": "affective",
+      "multi_layer": false,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R91: visitors receive the same scene projection but cannot write presence or interactions; R203: visit snapshot returns the same scene state.",
+      "plan_grounding": "P141: visit snapshot returns projection of same scene state; P504: visitor paths are render-only and cannot affect host state.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [],
+      "note": "Visitor sees the actual aviary, not a staged social surface."
+    },
+    {
+      "id": "F40",
+      "title": "sr-narration-cadence-slow",
+      "feature_id": 100,
+      "weight": 4,
+      "type": "affective",
+      "multi_layer": true,
+      "feature_captured": true,
+      "denominator_status": "included",
+      "reconstruction_evidence": "R23: screen-reader narration is paced connected observations, not an event list; R353: paced observations avoid flooding and missed chatter replay.",
+      "plan_grounding": "P375: narration updates about every 45 seconds; P376: bounded queue and no missed narration replay; P519: review rejects event-list narration.",
+      "rule_without_why": false,
+      "recovery": "full",
+      "layers": [
+        {
+          "name": "L1",
+          "recovered": true
+        },
+        {
+          "name": "L2",
+          "recovered": true
+        },
+        {
+          "name": "L3",
+          "recovered": true
+        }
+      ],
+      "note": "Slow cadence, queue protection, and observation-not-monitoring rhythm are recovered."
+    }
+  ],
+  "patterns_prose": "<p><strong>Feature capture saturated:</strong> all 120 feature anchors were captured, with only two inclusive borderline calls: the domain glossary and the privacy-policy-link surface.</p><p><strong>Encoding loss was mostly rationale compression, not missing mechanics.</strong> The main losses were S2, F10, F14, F16, F33, and F35. In each case the plan and reconstruction kept the operational rule, but one affective or downstream layer was not explicit enough for full v06 credit.</p><p><strong>Weight-3 whys were slightly weaker than weight-2 whys.</strong> Multi-layer items recovered 98.0 of 108.0 weighted points, while weight-2 items recovered 42.0 of 44.0. The common drop was the secondary or downstream rationale after the primary rule survived.</p><p><strong>Subdomain pattern:</strong> interaction/engagement exceptions and account lifecycle whys leaked most. Audio, accessibility, server simulation, visits, and telemetry boundaries were reconstructed strongly.</p><p><strong>Evidence-bound effect:</strong> F33 was denied despite the read-only notebook rule because the observer-record-versus-user-journal why was absent. No ungrounded reconstruction was found.</p>",
+  "recommendations_prose": "<p>For v2, keep the evidence-bound operator and add sharper probes for cases where a rule is easy to preserve but the reason is easy to compress: notice-versus-announce, no-streak user-intention rotation, read-only notebook as observer record, and deletion grace/privacy residue.</p><p>Add a per-layer diagnostic field in the report template for whether a lost layer was absent from PLAN, absent from RECONSTRUCTION, or both. That would make partial multi-layer calls less subjective.</p><p>Consider adding more feature-level exceptions around account lifecycle and quiet social surfaces; this run shows strong planners can implement the behavior while softening the product-philosophy rationale.</p>",
+  "caveats_prose": "<p>The prompt asserted fresh context and prohibited subagents; this scoring pass used only the allowlisted phase-two files and assigned slot files. Fresh-context isolation appears to hold from the available artifacts.</p><p>This is a single run with no variance signal. The TIMING ledger contained phase 1 and phase 2A only, so phase 2B timing fields were omitted from the score JSON.</p><p>Two feature-capture calls were inclusive borderlines: feature 7, because the plan operationally defines terms without a standalone glossary, and feature 87, because settings/privacy copy is specified without a literal privacy-policy-link phrase.</p><p>No confabulated why claims were found. The main methodology caveat is the subjective line between compressed-but-sufficient rationale and missing rationale for affective whys.</p>"
+};
+
+/* ─────────── helpers ─────────── */
+const $ = (id) => document.getElementById(id);
+const fmtPct = (n) => (n == null) ? "—" : n.toFixed(1);
+const fmtPctRaw = (n) => (n == null) ? "—" : (n * 100).toFixed(1);
+const fmtNum = (n) => (n == null) ? "—" : Number(n).toLocaleString();
+const setText = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+const setVal = (id, v) => {
+  const el = $(id); if (!el) return;
+  if (v == null || v === "") { el.textContent = "—"; el.classList.add("empty"); }
+  else { el.textContent = v; el.classList.remove("empty"); }
+};
+
+/* ─────────── populate header + hero ─────────── */
+function renderHeader(d) {
+  setText("hdr-run-number", String(d.run_number).padStart(3, "0"));
+  if (d.run_label) {
+    $("hdr-run-label-wrap").style.display = "inline";
+    setText("hdr-run-label", d.run_label);
+  }
+  setText("hdr-timestamp", d.timestamp);
+  setText("hdr-instance", d.instance_name || "Pocket Aviary");
+}
+function renderHero(d) {
+  // scores in the schema are 0-1; display as percent
+  const planning = d.scores.planning_quality * 100;
+  const fidelity = d.scores.intent_fidelity * 100;
+  setText("m-planning", planning.toFixed(1));
+  setText("m-fidelity", fidelity.toFixed(1));
+  setText("m-combined", String(d.scores.combined).padStart(4, "0"));
+  if (d.low_confidence) $("low-conf").style.display = "block";
+}
+
+/* ─────────── 2D scatter ─────────── */
+function renderScatter(d) {
+  const planning = d.scores.planning_quality * 100;
+  const fidelity = d.scores.intent_fidelity * 100;
+  setText("m-coord-x", planning.toFixed(1));
+  setText("m-coord-y", fidelity.toFixed(1));
+  setText("m-sysfid", (d.scores.system_level_fidelity * 100).toFixed(1));
+  setText("m-featfid", (d.scores.feature_level_fidelity * 100).toFixed(1));
+  $("bar-sysfid").style.width = (d.scores.system_level_fidelity * 100).toFixed(1) + "%";
+  $("bar-featfid").style.width = (d.scores.feature_level_fidelity * 100).toFixed(1) + "%";
+
+  // plot the SVG. canvas is 360x360 viewbox. inner plot is 60..330 (270 wide), x→ planning, y↑ fidelity
+  const W = 360, H = 360, P = 30, INNER = 270;
+  const x0 = P + 30, y0 = P + 30;       // origin (0,0) at bottom-left of plot
+  const xmax = x0 + INNER, ymax = y0;   // top-right corner is (xmax, ymax-INNER)
+  const px = (v) => x0 + (v / 100) * INNER;
+  const py = (v) => y0 + INNER - (v / 100) * INNER;
+
+  const svg = $("scatter-svg");
+  let s = "";
+  // grid
+  for (let i = 0; i <= 100; i += 25) {
+    s += `<line class="scatter-grid" x1="${px(i)}" y1="${py(0)}" x2="${px(i)}" y2="${py(100)}" />`;
+    s += `<line class="scatter-grid" x1="${px(0)}" y1="${py(i)}" x2="${px(100)}" y2="${py(i)}" />`;
+  }
+  // axes
+  s += `<line class="scatter-axis" x1="${px(0)}" y1="${py(0)}" x2="${px(100)}" y2="${py(0)}" />`;
+  s += `<line class="scatter-axis" x1="${px(0)}" y1="${py(0)}" x2="${px(0)}" y2="${py(100)}" />`;
+  // tick labels
+  for (let i = 0; i <= 100; i += 25) {
+    s += `<text class="scatter-label" x="${px(i)}" y="${py(0) + 14}" text-anchor="middle">${i}</text>`;
+    s += `<text class="scatter-label" x="${px(0) - 6}" y="${py(i) + 4}" text-anchor="end">${i}</text>`;
+  }
+  // axis labels
+  s += `<text class="scatter-axis-label" x="${px(50)}" y="${py(0) + 30}" text-anchor="middle">Planning quality (%)</text>`;
+  s += `<text class="scatter-axis-label" x="${px(0) - 26}" y="${py(50)}" text-anchor="middle" transform="rotate(-90, ${px(0) - 26}, ${py(50)})">Intent fidelity (%)</text>`;
+  // run point — glow + dot
+  s += `<circle class="scatter-point-glow" cx="${px(planning)}" cy="${py(fidelity)}" r="14" />`;
+  s += `<circle class="scatter-point" cx="${px(planning)}" cy="${py(fidelity)}" r="6" />`;
+  svg.innerHTML = s;
+}
+
+/* ─────────── runtime metadata ─────────── */
+function renderRuntime(d) {
+  setVal("cand-model", d.candidate.model);
+  setVal("cand-effort", d.candidate.effort_level);
+  setVal("cand-temp", d.candidate.temperature);
+  setVal("cand-harness", d.candidate.harness);
+  setVal("cand-provider", d.candidate.provider);
+  setVal("eval-model", d.evaluator.model);
+  setVal("eval-effort", d.evaluator.effort_level);
+  setVal("eval-temp", d.evaluator.temperature);
+  setVal("eval-harness", d.evaluator.harness);
+  setVal("eval-provider", d.evaluator.provider);
+}
+
+/* ─────────── failure groupings ─────────── */
+function renderGroupings(d) {
+  const groups = [
+    { name: "By why type", rows: d.groupings.by_type },
+    { name: "By weight tier", rows: d.groupings.by_weight },
+    { name: "By anchor", rows: d.groupings.by_anchor }
+  ];
+  let html = "";
+  for (const g of groups) {
+    html += `<div class="grouping-card"><h3>${g.name}</h3>`;
+    for (const r of g.rows) {
+      const rate = r.weighted_total > 0 ? (r.weighted_recovered / r.weighted_total * 100) : 0;
+      html += `<div class="grouping-row">
+        <div class="grouping-label"><span>${r.label}</span><span class="mono">${rate.toFixed(0)}% (${r.weighted_recovered.toFixed(1)}/${r.weighted_total.toFixed(1)})</span></div>
+        <div class="grouping-bar"><div class="grouping-bar-fill" style="width:${rate.toFixed(1)}%"></div></div>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  $("groupings-grid").innerHTML = html;
+}
+
+/* ─────────── evidence-bound audit ─────────── */
+function renderEvidenceAudit(d) {
+  const e = d.evidence_audit || {};
+  const g = d.gold_why_totals || {};
+  const ir = d.intent_recovery || {};
+  const w = d.weighted_totals || {};
+  const rows = [
+    ["Possible whys", g.possible_gold_why_count ?? d.denominators?.total_gold_whys ?? 0],
+    ["Possible weight", ir.total_possible_weight ?? g.possible_gold_why_weight ?? 0],
+    ["Reachable whys", ir.reachable_gold_why_count ?? e.denominator_included_whys ?? 0],
+    ["Excluded unreachable whys", ir.excluded_unreachable_why_count ?? e.denominator_excluded_unreachable_whys ?? 0],
+    ["Recovered / reachable weight", `${fmtNum(ir.recovered_weight ?? w.intent_recovered ?? 0)} / ${fmtNum(ir.reachable_weight ?? w.intent_denominator ?? 0)}`],
+    ["Whys with reconstruction evidence", e.whys_with_reconstruction_evidence ?? 0],
+    ["Whys with PLAN grounding", e.whys_with_plan_grounding ?? 0],
+    ["Rule without why", e.rule_without_why_count ?? 0],
+    ["Plan-only not reconstructed", e.plan_only_not_reconstructed_count ?? 0],
+    ["Ungrounded reconstruction", e.ungrounded_reconstruction_count ?? 0]
+  ];
+  $("evidence-grid").innerHTML = rows.map(([label, value]) => `<div class="grouping-card">
+    <h3>${escapeHtml(label)}</h3>
+    <div class="grouping-row"><div class="grouping-label"><span class="mono">${escapeHtml(value)}</span></div></div>
+  </div>`).join("");
+}
+
+/* ─────────── features table ─────────── */
+let featuresFilter = "all";
+let featuresSort = { key: "id", dir: 1 };
+function renderFeatures(d) {
+  const tbody = $("features-table").querySelector("tbody");
+  let rows = d.features.slice();
+  if (featuresFilter === "captured") rows = rows.filter(r => r.captured);
+  else if (featuresFilter === "missed") rows = rows.filter(r => !r.captured);
+  else if (featuresFilter === "borderline") rows = rows.filter(r => r.borderline);
+  rows.sort((a, b) => {
+    const k = featuresSort.key, dir = featuresSort.dir;
+    let va = a[k], vb = b[k];
+    if (typeof va === "boolean") { va = va ? 1 : 0; vb = vb ? 1 : 0; }
+    if (va < vb) return -1 * dir;
+    if (va > vb) return 1 * dir;
+    return 0;
+  });
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td class="mono">${r.id}</td>
+    <td>${escapeHtml(r.title || "")}${r.borderline ? '<span class="borderline-flag">borderline</span>' : ""}</td>
+    <td class="mono muted" style="font-size:11px">${escapeHtml(r.file || "")}</td>
+    <td>${r.captured ? '<span class="captured-tick">✓ captured</span>' : '<span class="captured-x">✗ missed</span>'}</td>
+  </tr>`).join("") || `<tr><td colspan="4" style="text-align:center; padding:20px; color:#6b6663">No rows match this filter.</td></tr>`;
+  updateSortHeaders("features-table", featuresSort);
+}
+
+/* ─────────── system whys table ─────────── */
+let sysFilter = "all";
+let sysSort = { key: "id", dir: 1 };
+function renderSysWhys(d) {
+  const tbody = $("sys-table").querySelector("tbody");
+  let rows = d.system_whys.slice();
+  if (sysFilter === "full" || sysFilter === "partial" || sysFilter === "none") {
+    rows = rows.filter(r => r.recovery === sysFilter);
+  } else if (sysFilter === "affective" || sysFilter === "functional") {
+    rows = rows.filter(r => r.type === sysFilter);
+  }
+  rows.sort((a, b) => sortRows(a, b, sysSort));
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td class="mono">${escapeHtml(r.id)}</td>
+    <td>${escapeHtml(r.title || "")}</td>
+    <td class="mono">${r.weight}</td>
+    <td>${escapeHtml(r.type || "")}</td>
+    <td><span class="denom-badge ${escapeHtml(r.denominator_status || "included")}">${escapeHtml(r.denominator_status || "included")}</span></td>
+    <td class="evidence-cell ${evidenceClass(r.reconstruction_evidence)}">${escapeHtml(r.reconstruction_evidence || "none")}</td>
+    <td class="evidence-cell ${evidenceClass(r.plan_grounding)}">${escapeHtml(r.plan_grounding || "none")}</td>
+    <td>${r.identified_by_b ? "yes" : "no"}</td>
+    <td>${r.preserved_in_plan ? "yes" : "no"}</td>
+    <td>${r.rule_without_why ? '<span class="rule-flag">yes</span>' : "no"}</td>
+    <td><span class="recovery-badge ${r.recovery}">${r.recovery}</span></td>
+    <td>${renderLayers(r)}</td>
+    <td class="muted" style="font-size:12px">${escapeHtml(r.note || "")}</td>
+  </tr>`).join("") || `<tr><td colspan="13" style="text-align:center; padding:20px; color:#6b6663">No rows match this filter.</td></tr>`;
+  updateSortHeaders("sys-table", sysSort);
+}
+
+/* ─────────── feature whys table ─────────── */
+let featFilter = "all";
+let featSort = { key: "id", dir: 1 };
+function renderFeatWhys(d) {
+  const tbody = $("feat-table").querySelector("tbody");
+  let rows = d.feature_whys.slice();
+  if (["full", "partial", "none", "unreachable"].includes(featFilter)) {
+    rows = rows.filter(r => r.recovery === featFilter);
+  } else if (featFilter === "rule_without_why") {
+    rows = rows.filter(r => r.rule_without_why);
+  } else if (featFilter === "affective" || featFilter === "functional") {
+    rows = rows.filter(r => r.type === featFilter);
+  }
+  rows.sort((a, b) => sortRows(a, b, featSort));
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td class="mono">${escapeHtml(r.id)}</td>
+    <td>${escapeHtml(r.title || "")}</td>
+    <td class="mono">${r.weight}</td>
+    <td>${escapeHtml(r.type || "")}</td>
+    <td>${r.feature_captured ? '<span class="captured-tick">✓</span>' : '<span class="captured-x">✗</span>'}</td>
+    <td><span class="denom-badge ${escapeHtml(r.denominator_status || (r.recovery === "unreachable" ? "unreachable_excluded" : "included"))}">${escapeHtml(r.denominator_status || (r.recovery === "unreachable" ? "unreachable_excluded" : "included"))}</span></td>
+    <td class="evidence-cell ${evidenceClass(r.reconstruction_evidence)}">${escapeHtml(r.reconstruction_evidence || "none")}</td>
+    <td class="evidence-cell ${evidenceClass(r.plan_grounding)}">${escapeHtml(r.plan_grounding || "none")}</td>
+    <td>${r.rule_without_why ? '<span class="rule-flag">yes</span>' : "no"}</td>
+    <td><span class="recovery-badge ${r.recovery}">${r.recovery}</span></td>
+    <td>${renderLayers(r)}</td>
+    <td class="muted" style="font-size:12px">${escapeHtml(r.note || "")}</td>
+  </tr>`).join("") || `<tr><td colspan="12" style="text-align:center; padding:20px; color:#6b6663">No rows match this filter.</td></tr>`;
+  updateSortHeaders("feat-table", featSort);
+}
+
+/* ─────────── shared row helpers ─────────── */
+function renderLayers(r) {
+  if (!r.multi_layer || !r.layers || r.layers.length === 0) {
+    return '<span class="layer-cell na" title="single-layer why">—</span>';
+  }
+  return '<span class="layer-cells">' + r.layers.map((l, i) => {
+    if (r.recovery === "unreachable") return `<span class="layer-cell na" title="${l.name}: anchor unreachable">·</span>`;
+    return `<span class="layer-cell ${l.recovered ? "recovered" : "lost"}" title="${l.name}: ${l.recovered ? "recovered" : "lost"}">${i + 1}</span>`;
+  }).join("") + '</span>';
+}
+function sortRows(a, b, sort) {
+  const k = sort.key, dir = sort.dir;
+  let va = a[k], vb = b[k];
+  if (typeof va === "boolean") { va = va ? 1 : 0; vb = vb ? 1 : 0; }
+  if (k === "recovery") {
+    const order = { full: 0, partial: 1, none: 2, unreachable: 3 };
+    va = order[va] ?? 4; vb = order[vb] ?? 4;
+  }
+  if (va < vb) return -1 * dir;
+  if (va > vb) return 1 * dir;
+  return 0;
+}
+function updateSortHeaders(tableId, sort) {
+  const ths = $(tableId).querySelectorAll("th[data-sort]");
+  ths.forEach(th => {
+    const k = th.dataset.sort;
+    th.classList.toggle("sorted", k === sort.key);
+    const arrow = th.querySelector(".sort-arrow");
+    if (arrow) arrow.textContent = (k === sort.key) ? (sort.dir > 0 ? "▾" : "▴") : "▾";
+  });
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function evidenceClass(v) {
+  return (!v || String(v).trim().toLowerCase() === "none") ? "none" : "";
+}
+
+/* ─────────── prose ─────────── */
+function renderProse(d) {
+  $("patterns-prose").innerHTML = d.patterns_prose || "<p><em>(no patterns prose provided)</em></p>";
+  $("recommendations-prose").innerHTML = d.recommendations_prose || "<p><em>(no recommendations prose provided)</em></p>";
+  $("caveats-prose").innerHTML = d.caveats_prose || "<p><em>(no caveats prose provided)</em></p>";
+}
+
+/* ─────────── wire-up ─────────── */
+function wireFilters() {
+  document.querySelectorAll("[data-filter-features]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      featuresFilter = btn.dataset.filterFeatures;
+      document.querySelectorAll("[data-filter-features]").forEach(b => b.classList.toggle("active", b === btn));
+      renderFeatures(REPORT_DATA);
+    });
+  });
+  document.querySelectorAll("[data-filter-sys]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      sysFilter = btn.dataset.filterSys;
+      document.querySelectorAll("[data-filter-sys]").forEach(b => b.classList.toggle("active", b === btn));
+      renderSysWhys(REPORT_DATA);
+    });
+  });
+  document.querySelectorAll("[data-filter-feat]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      featFilter = btn.dataset.filterFeat;
+      document.querySelectorAll("[data-filter-feat]").forEach(b => b.classList.toggle("active", b === btn));
+      renderFeatWhys(REPORT_DATA);
+    });
+  });
+}
+function wireSort() {
+  $("features-table").querySelectorAll("th[data-sort]").forEach(th => {
+    th.addEventListener("click", () => {
+      const k = th.dataset.sort;
+      featuresSort = { key: k, dir: featuresSort.key === k ? -featuresSort.dir : 1 };
+      renderFeatures(REPORT_DATA);
+    });
+  });
+  $("sys-table").querySelectorAll("th[data-sort]").forEach(th => {
+    th.addEventListener("click", () => {
+      const k = th.dataset.sort;
+      sysSort = { key: k, dir: sysSort.key === k ? -sysSort.dir : 1 };
+      renderSysWhys(REPORT_DATA);
+    });
+  });
+  $("feat-table").querySelectorAll("th[data-sort]").forEach(th => {
+    th.addEventListener("click", () => {
+      const k = th.dataset.sort;
+      featSort = { key: k, dir: featSort.key === k ? -featSort.dir : 1 };
+      renderFeatWhys(REPORT_DATA);
+    });
+  });
+}
+
+/* ─────────── boot ─────────── */
+(function init() {
+  renderHeader(REPORT_DATA);
+  renderHero(REPORT_DATA);
+  renderScatter(REPORT_DATA);
+  renderRuntime(REPORT_DATA);
+  renderEvidenceAudit(REPORT_DATA);
+  renderGroupings(REPORT_DATA);
+  renderFeatures(REPORT_DATA);
+  renderSysWhys(REPORT_DATA);
+  renderFeatWhys(REPORT_DATA);
+  renderProse(REPORT_DATA);
+  wireFilters();
+  wireSort();
+})();
+</script>
+</body>
+</html>
