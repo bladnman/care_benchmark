@@ -1,0 +1,13 @@
+{
+  "audit_warnings": [],
+  "candidate_effort_default": "extra-high",
+  "candidate_model_default": "gpt-6-sol",
+  "completed_at": "2026-09-24T07:36:23Z",
+  "planned_count": 1,
+  "reconstructor_effort_default": "extra-high",
+  "reconstructor_model_default": "gpt-5.5",
+  "scorer_effort_default": "extra-high",
+  "scorer_model_default": "gpt-5.5",
+  "started_at": "2026-09-24T07:21:42Z",
+  "wave_number": 3
+}
