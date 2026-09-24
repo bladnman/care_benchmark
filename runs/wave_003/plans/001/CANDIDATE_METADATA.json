@@ -1,0 +1,12 @@
+{
+  "model": "gpt-6-luna",
+  "effort_level": "extra-high",
+  "temperature": null,
+  "harness": "codex-cli",
+  "provider": "openai",
+  "parameters": {
+    "native_effort_field": "model_reasoning_effort",
+    "native_effort_value": "xhigh",
+    "native_model_id": "gpt-6-luna"
+  }
+}
